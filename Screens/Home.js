@@ -31,9 +31,9 @@ const Home = () => {
             style={styles.userProfileImage}
           />
           <View style={styles.userInfo}>
-            <Text style={styles.userName}>Muhammad Hamza Munir</Text>
+            <Text style={styles.userName}>{user?user.username:"Unknown"}</Text>
             <Text style={styles.userAddress}>
-              {user?user.email:"3820 Cameron Road, Dunkirk Pak"}
+              {user?user.email:"Not Specified"}
             </Text>
           </View>
         </View>

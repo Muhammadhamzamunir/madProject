@@ -13,22 +13,28 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import Modal from "react-native-modal";
 import { useNavigation } from "@react-navigation/native";
 import { styles } from "./Signup";
-
+import { getAuth, onAuthStateChanged,signOut } from 'firebase/auth';
+import app from "../firebase/config";
+import { useAuth } from "../AuthContextApi";
 const Account = () => {
+  const user = useAuth();
   const [isModalVisible, setModalVisible] = useState(false);
+  const auth = getAuth(app);
   const navigation = useNavigation();
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
-
+   const settingButtonHandle =()=>{
+    navigation.navigate('SettingScreen')
+   }
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.topContainer}>
-        <TouchableOpacity style={styles.settingIcon}>
+        <TouchableOpacity style={styles.settingIcon} onPress={settingButtonHandle}>
           <Icon name="gear" size={23} color="black" />
         </TouchableOpacity>
       </View>
-      <View style={styles.registrationContainer}>
+    {!user &&   <View style={styles.registrationContainer}>
         <Text style={styles.registrationText}>Are You Ready To Join Us?</Text>
         <TouchableOpacity style={styles.regButton} onPress={toggleModal}>
           <Text
@@ -41,8 +47,22 @@ const Account = () => {
             Login OR SignUp
           </Text>
         </TouchableOpacity>
-      </View>
-
+      </View>}
+      <TouchableOpacity style={styles.regButton} onPress={()=>{
+        signOut(auth).then(()=>{
+          console.log(("user logged out"));
+        })
+      }}>
+          <Text
+            style={{
+              textAlign: "center",
+              fontSize: 17,
+              color: Colors.secondaryColor,
+            }}
+          >
+           Logout
+          </Text>
+        </TouchableOpacity>
 
       
       {/* ------------------------------Modal Start---------------------------------------------------------------- */}

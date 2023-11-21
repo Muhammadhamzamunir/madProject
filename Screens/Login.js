@@ -61,7 +61,7 @@ const Login = () => {
       );
 
       const user = userCredential.user;
-      console.log(user);
+      // console.log(user);
       toast.show({
         title: "Success",
         status: "success",
@@ -70,7 +70,7 @@ const Login = () => {
         style: { top: "5%", backgroundColor: "#2ecc71" },
       });
       resetForm();
-      navigation.navigate("Home");
+      navigation.goBack();
     } catch (error) {
       let errorMessage = "An error occurred. Please try again.";
       toast.show({
