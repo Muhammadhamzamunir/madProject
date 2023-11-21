@@ -13,7 +13,7 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import Modal from "react-native-modal";
 import { useNavigation } from "@react-navigation/native";
 import { styles } from "./Signup";
-import { getAuth, onAuthStateChanged,signOut } from 'firebase/auth';
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import app from "../firebase/config";
 import { useAuth } from "../AuthContextApi";
 const Account = () => {
@@ -24,31 +24,35 @@ const Account = () => {
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
-   const settingButtonHandle =()=>{
-    navigation.navigate('Settings')
-   }
+  const settingButtonHandle = () => {
+    navigation.navigate("Settings");
+  };
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.topContainer}>
-        <TouchableOpacity style={styles.settingIcon} onPress={settingButtonHandle}>
+        <TouchableOpacity
+          style={styles.settingIcon}
+          onPress={settingButtonHandle}
+        >
           <Icon name="gear" size={23} color="black" />
         </TouchableOpacity>
       </View>
-    {!user &&   <View style={styles.registrationContainer}>
-        <Text style={styles.registrationText}>Are You Ready To Join Us?</Text>
-        <TouchableOpacity style={styles.regButton} onPress={toggleModal}>
-          <Text
-            style={{
-              textAlign: "center",
-              fontSize: 17,
-              color: Colors.secondaryColor,
-            }}
-          >
-            Login OR SignUp
-          </Text>
-        </TouchableOpacity>
-      </View>}
-     
+      {!user && (
+        <View style={styles.registrationContainer}>
+          <Text style={styles.registrationText}>Are You Ready To Join Us?</Text>
+          <TouchableOpacity style={styles.regButton} onPress={toggleModal}>
+            <Text
+              style={{
+                textAlign: "center",
+                fontSize: 17,
+                color: Colors.secondaryColor,
+              }}
+            >
+              Login OR SignUp
+            </Text>
+          </TouchableOpacity>
+        </View>
+      )}
       <View style={customCSS.regbakeryView}>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <Icon name="bullhorn" size={25} color={Colors.primaryColor} />
@@ -63,12 +67,30 @@ const Account = () => {
             Register Your Bakery
           </Text>
         </View>
-        <Text style={customCSS.regBakeryText}>
-          A Good Platform to grow your business. Join us Now!😎 and Enjoy lot of
-          Traffic on your website and earn lot of Money.🥳🎉
-        </Text>
+        <View style={{ flexDirection: "row" }}>
+          <View style={{ flex: 0.9 }}>
+            <Text style={customCSS.regBakeryText}>
+              A Good Platform to grow your business. Join us Now!😎 and Enjoy
+              lot of Traffic on your website and earn lot of Money.🥳🎉
+              {"\n"}
+            </Text>
+            <Text> Click On The Button Now!👇</Text>
+            <TouchableOpacity
+              style={customCSS.registerNowButton}
+              onPress={() => console.log("Register Now pressed")}
+            >
+              <Text style={customCSS.registerNowText}>Register Now</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={{ flex: 0.5 }}>
+            <Image
+              source={require("../assets/click.png")}
+              style={customCSS.img}
+            />
+          </View>
+        </View>
       </View>
-      
+
       {/* ------------------------------Modal Start---------------------------------------------------------------- */}
       <Modal isVisible={isModalVisible} onBackdropPress={toggleModal}>
         <View style={styles.modalContainer}>
@@ -83,8 +105,8 @@ const Account = () => {
           <TouchableOpacity
             style={styles.modalButton}
             onPress={() => {
-            setModalVisible(!isModalVisible);
-            navigation.removeListener
+              setModalVisible(!isModalVisible);
+              navigation.removeListener;
               navigation.navigate("Login");
             }}
           >
@@ -102,9 +124,9 @@ const Account = () => {
           <TouchableOpacity
             style={styles.regButton}
             onPress={() => {
-            setModalVisible(!isModalVisible);
-  
-              navigation.navigate("Signup",);
+              setModalVisible(!isModalVisible);
+
+              navigation.navigate("Signup");
             }}
           >
             <Text
@@ -144,7 +166,6 @@ const Account = () => {
 };
 
 export default Account;
-
 export const customCSS = StyleSheet.create({
   regbakeryView: {
     padding: 10,
@@ -152,11 +173,34 @@ export const customCSS = StyleSheet.create({
     borderTopColor: Colors.grey,
     borderBlockColor: Colors.grey,
     borderBottomWidth: 1,
+    backgroundColor: "#f6e4f3",
   },
   regBakeryText: {
-    paddingHorizontal: 30,
+    padding: 8,
     color: "grey",
-    marginTop:4,
-    fontFamily:"FuzzyBubbles-Regular"
+    marginTop: 4,
+  },
+  registerNowButton: {
+    borderWidth: 3,
+    borderColor: Colors.primaryColor,
+    borderRadius: 5,
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    marginTop: 10,
+  },
+  registerNowText: {
+    color: Colors.primaryColor,
+    fontSize: 16,
+    fontWeight: "bold",
+
+    textAlign: "center",
+  },
+  img: {
+    marginTop: -14,
+    marginBottom: 0,
+    padding: 0,
+    width: "100%",
+    height: 200,
+    overflow: "",
   },
 });
