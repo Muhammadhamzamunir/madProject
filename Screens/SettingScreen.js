@@ -2,45 +2,58 @@ import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import React from "react";
 import Icon from "react-native-vector-icons/FontAwesome";
 import Colors from "../assets/Colors";
+import { useAuth } from "../AuthContextApi";
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+import app from "../firebase/config";
 const SettingScreen = () => {
+  const user = useAuth();
+
   return (
     <View style={{ flex: 1 }}>
       <View style={{ margin: 10, flex: 1 }}>
-        <TouchableOpacity style={styles.settingInsideBtn}>
-          <Text style={styles.settingBtnText}>Account Information</Text>
-          <Icon name="angle-right" size={20} color="grey" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.settingInsideBtn}>
-          <Text style={styles.settingBtnText}>Address Book</Text>
-          <Icon name="angle-right" size={20} color="grey" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.settingInsideBtn}>
-          <Text style={styles.settingBtnText}>Change Password</Text>
-          <Icon name="angle-right" size={20} color="grey" />
-        </TouchableOpacity>
+        {user && (
+          <View>
+            <TouchableOpacity style={styles.settingInsideBtn}>
+              <Text style={styles.settingBtnText}>Account Information</Text>
+              <Icon name="angle-right" size={20} color="grey" />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.settingInsideBtn}>
+              <Text style={styles.settingBtnText}>Address Book</Text>
+              <Icon name="angle-right" size={20} color="grey" />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.settingInsideBtn}>
+              <Text style={styles.settingBtnText}>Change Password</Text>
+              <Icon name="angle-right" size={20} color="grey" />
+            </TouchableOpacity>
+          </View>
+        )}
         <TouchableOpacity style={styles.settingInsideBtn}>
           <Text style={styles.settingBtnText}>Term and Policies</Text>
           <Icon name="angle-right" size={20} color="grey" />
         </TouchableOpacity>
       </View>
+
       <View style={styles.logoutbtnView}>
-        <TouchableOpacity
-          style={styles.logoutbtn}
-          onPress={() => {
-            signOut(auth).then(() => {
-              console.log("user logged out");
-            });
-          }}
-        >
-          <Text
-            style={[
-              styles.logoutText,
-              { textDecorationStyle: "dashed", color: "black" },
-            ]}
+        {user && (
+          <TouchableOpacity
+            style={styles.logoutbtn}
+            onPress={() => {
+              const auth = getAuth(app);
+              signOut(auth).then(() => {
+                console.log("user logged out");
+              });
+            }}
           >
-            Logout
-          </Text>
-        </TouchableOpacity>
+            <Text
+              style={[
+                styles.logoutText,
+                { textDecorationStyle: "dashed", color: "black" },
+              ]}
+            >
+              Logout
+            </Text>
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );
@@ -72,7 +85,7 @@ const styles = StyleSheet.create({
     borderColor: Colors.primaryColor,
     borderWidth: 2,
     borderRadius: 10,
-    marginBottom:15
+    marginBottom: 15,
   },
   logoutText: {
     color: Colors.primaryColor,
