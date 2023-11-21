@@ -49,7 +49,25 @@ const Account = () => {
         </TouchableOpacity>
       </View>}
      
-<View></View>
+      <View style={customCSS.regbakeryView}>
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <Icon name="bullhorn" size={25} color={Colors.primaryColor} />
+          <Text
+            style={{
+              fontSize: 25,
+              fontWeight: "bold",
+              marginLeft: 5,
+              fontFamily: "cursive",
+            }}
+          >
+            Register Your Bakery
+          </Text>
+        </View>
+        <Text style={customCSS.regBakeryText}>
+          A Good Platform to grow your business. Join us Now!😎 and Enjoy lot of
+          Traffic on your website and earn lot of Money.🥳🎉
+        </Text>
+      </View>
       
       {/* ------------------------------Modal Start---------------------------------------------------------------- */}
       <Modal isVisible={isModalVisible} onBackdropPress={toggleModal}>
@@ -127,6 +145,18 @@ const Account = () => {
 
 export default Account;
 
-//  export const styles = StyleSheet.create({
- 
-// });
+export const customCSS = StyleSheet.create({
+  regbakeryView: {
+    padding: 10,
+    borderTopWidth: 1,
+    borderTopColor: Colors.grey,
+    borderBlockColor: Colors.grey,
+    borderBottomWidth: 1,
+  },
+  regBakeryText: {
+    paddingHorizontal: 30,
+    color: "grey",
+    marginTop:4,
+    fontFamily:"FuzzyBubbles-Regular"
+  },
+});
