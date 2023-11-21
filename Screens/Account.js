@@ -58,7 +58,7 @@ const Account = () => {
           <Icon name="bullhorn" size={25} color={Colors.primaryColor} />
           <Text
             style={{
-              fontSize: 25,
+              fontSize: 28,
               fontWeight: "bold",
               marginLeft: 5,
               fontFamily: "cursive",

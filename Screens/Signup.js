@@ -1,7 +1,6 @@
-import React,{useState} from "react";
+import React, { useState } from "react";
 import {
   View,
-
   Text,
   TextInput,
   Image,
@@ -68,10 +67,12 @@ const Signup = () => {
             validationSchema={SignupSchema}
             onSubmit={(values, { resetForm }) => {
               setLoading(true);
-              createUserWithEmailAndPassword(auth, values.email, values.password)
-
+              createUserWithEmailAndPassword(
+                auth,
+                values.email,
+                values.password
+              )
                 .then((userCredential) => {
-
                   const createdUser = userCredential.user;
                   const db = getFirestore(app);
                   const usersCollection = collection(db, "users");
@@ -80,7 +81,7 @@ const Signup = () => {
                     username: values.username,
                     email: values.email,
                     password: values.password,
-                    phone: values.phoneNumber
+                    phone: values.phoneNumber,
                   });
                   setLoading(false);
                   toast.show({
@@ -121,8 +122,6 @@ const Signup = () => {
                     style: { top: "5%", backgroundColor: "#e74c3c" },
                   });
                 });
-            
-            
             }}
           >
             {({ handleChange, handleBlur, handleSubmit, values, errors }) => (
@@ -180,13 +179,25 @@ const Signup = () => {
                   keyboardType="numeric"
                 />
                 <Text style={styles.errorText}>{errors.phoneNumber}</Text>
-                <Text style={{color:"grey",paddingHorizontal:20, marginBottom:5}}>By clicking “Create Account”, I agree to SpechSlice's Terms of Use and Privacy Policy</Text>
+                <Text
+                  style={{
+                    color: "grey",
+                    paddingHorizontal: 20,
+                    marginBottom: 5,
+                  }}
+                >
+                  By clicking “Create Account”, I agree to SpechSlice's Terms of
+                  Use and Privacy Policy
+                </Text>
                 <TouchableOpacity
                   style={styles.regButton}
                   onPress={handleSubmit}
                 >
-                   {loading ? (
-                    <ActivityIndicator size="small" color={Colors.secondaryColor} />
+                  {loading ? (
+                    <ActivityIndicator
+                      size="small"
+                      color={Colors.secondaryColor}
+                    />
                   ) : (
                     <Text style={styles.regButtonText}>Create Account</Text>
                   )}
@@ -194,7 +205,7 @@ const Signup = () => {
               </View>
             )}
           </Formik>
-          
+
           <View style={styles.rowContainer}>
             <Text style={styles.accountText}>Already have an account? </Text>
             <TouchableOpacity onPress={() => navigation.navigate("Login")}>
@@ -235,7 +246,7 @@ export const styles = StyleSheet.create({
   },
   errorText: {
     color: "red",
-  // marginTop: 5,
+    // marginTop: 5,
     alignSelf: "flex-start",
     marginLeft: 30,
   },
@@ -260,7 +271,7 @@ export const styles = StyleSheet.create({
   regButtonText: {
     fontSize: 20,
     color: Colors.secondaryColor,
-    textAlign:"center"
+    textAlign: "center",
   },
   rowContainer: {
     flexDirection: "row",
@@ -274,7 +285,7 @@ export const styles = StyleSheet.create({
     color: Colors.primaryColor,
     fontSize: 16,
     marginLeft: 5,
-    textAlign:"center"
+    textAlign: "center",
   },
   container: {
     flex: 1,
@@ -287,7 +298,6 @@ export const styles = StyleSheet.create({
   },
   registrationContainer: {
     backgroundColor: Colors.grey,
-    flex: 0.22,
     borderRadius: 10,
     marginLeft: 6,
     marginRight: 6,
@@ -353,7 +363,6 @@ export const styles = StyleSheet.create({
     width: "90%",
     alignSelf: "center",
     marginBottom: 10,
-    
   },
   googleLogo: {
     width: 24,
