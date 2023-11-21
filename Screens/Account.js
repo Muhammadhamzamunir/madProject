@@ -49,7 +49,7 @@ const Account = () => {
         </TouchableOpacity>
       </View>}
      
-
+<View></View>
       
       {/* ------------------------------Modal Start---------------------------------------------------------------- */}
       <Modal isVisible={isModalVisible} onBackdropPress={toggleModal}>
