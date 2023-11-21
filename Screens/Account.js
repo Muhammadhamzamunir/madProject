@@ -25,7 +25,7 @@ const Account = () => {
     setModalVisible(!isModalVisible);
   };
    const settingButtonHandle =()=>{
-    navigation.navigate('SettingScreen')
+    navigation.navigate('Settings')
    }
   return (
     <SafeAreaView style={styles.container}>
@@ -48,21 +48,7 @@ const Account = () => {
           </Text>
         </TouchableOpacity>
       </View>}
-      <TouchableOpacity style={styles.regButton} onPress={()=>{
-        signOut(auth).then(()=>{
-          console.log(("user logged out"));
-        })
-      }}>
-          <Text
-            style={{
-              textAlign: "center",
-              fontSize: 17,
-              color: Colors.secondaryColor,
-            }}
-          >
-           Logout
-          </Text>
-        </TouchableOpacity>
+     
 
       
       {/* ------------------------------Modal Start---------------------------------------------------------------- */}

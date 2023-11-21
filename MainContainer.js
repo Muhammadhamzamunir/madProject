@@ -93,9 +93,9 @@ function MainContainer() {
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="SettingScreen"
+          name="Settings"
           component={SettingScreen}
-          options={{ headerShown: false }}
+          options={{ headerShown: true }}
         />
       </Stack.Navigator>
     </NavigationContainer>
