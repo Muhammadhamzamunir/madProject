@@ -9,7 +9,7 @@ import {
   StyleSheet,
   ScrollView,
   KeyboardAvoidingView,
-  SafeAreaView,
+  // SafeAreaView,
   ActivityIndicator,
 } from "react-native";
 import { Formik } from "formik";
@@ -26,7 +26,7 @@ import {
 import app from "../firebase/config";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { useToast, NativeBaseProvider } from "native-base";
-
+import { SafeAreaView } from "react-native-safe-area-context";
 const SignupSchema = yup.object({
   username: yup.string().required("Username is required"),
   email: yup.string().email("Invalid email").required("Email is required"),

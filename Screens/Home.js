@@ -31,9 +31,11 @@ const Home = () => {
             style={styles.userProfileImage}
           />
           <View style={styles.userInfo}>
-            <Text style={styles.userName}>{user?user.username:"Unknown"}</Text>
+            <Text style={styles.userName}>
+              {user ? user.username : "Unknown"}
+            </Text>
             <Text style={styles.userAddress}>
-              {user?user.email:"Not Specified"}
+              {user ? user.email : "Not Specified"}
             </Text>
           </View>
         </View>
@@ -114,47 +116,47 @@ const Home = () => {
       </View>
 
       <View style={styles.popularCakesContainer}>
-  <Text style={styles.popularCakesHeading}>Popular Cakes</Text>
-  <View style={styles.cakeRow}>
-    <TouchableOpacity style={styles.cakeCard}>
-      <Image
-        source={require("../assets/cake1.jpg")}
-        style={styles.cakeImage}
-      />
-      <Text style={styles.cakeName}>Cake Name</Text>
-      <View style={styles.cakeInfoRow}>
-        <Icon name="fire" size={16} color="#ff66b2" />
-        <Text style={styles.cakeCalories}>200 Calories</Text>
-      </View>
-      <Text style={styles.cakePrice}>$50.00</Text>
-    </TouchableOpacity>
+        <Text style={styles.popularCakesHeading}>Popular Cakes</Text>
+        <View style={styles.cakeRow}>
+          <TouchableOpacity style={styles.cakeCard}>
+            <Image
+              source={require("../assets/cake1.jpg")}
+              style={styles.cakeImage}
+            />
+            <Text style={styles.cakeName}>Cake Name</Text>
+            <View style={styles.cakeInfoRow}>
+              <Icon name="fire" size={16} color="#ff66b2" />
+              <Text style={styles.cakeCalories}>200 Calories</Text>
+            </View>
+            <Text style={styles.cakePrice}>$50.00</Text>
+          </TouchableOpacity>
 
-    <TouchableOpacity style={styles.cakeCard}>
-      <Image
-        source={require("../assets/cake2.jpg")}
-        style={styles.cakeImage}
-      />
-      <Text style={styles.cakeName}>Cake Name</Text>
-      <View style={styles.cakeInfoRow}>
-        <Icon name="fire" size={16} color="#ff66b2" />
-        <Text style={styles.cakeCalories}>200 Calories</Text>
+          <TouchableOpacity style={styles.cakeCard}>
+            <Image
+              source={require("../assets/cake2.jpg")}
+              style={styles.cakeImage}
+            />
+            <Text style={styles.cakeName}>Cake Name</Text>
+            <View style={styles.cakeInfoRow}>
+              <Icon name="fire" size={16} color="#ff66b2" />
+              <Text style={styles.cakeCalories}>200 Calories</Text>
+            </View>
+            <Text style={styles.cakePrice}>$50.00</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.cakeCard}>
+            <Image
+              source={require("../assets/splash.png")}
+              style={styles.cakeImage}
+            />
+            <Text style={styles.cakeName}>Cake Name</Text>
+            <View style={styles.cakeInfoRow}>
+              <Icon name="fire" size={16} color="#ff66b2" />
+              <Text style={styles.cakeCalories}>200 Calories</Text>
+            </View>
+            <Text style={styles.cakePrice}>$50.00</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-      <Text style={styles.cakePrice}>$50.00</Text>
-    </TouchableOpacity>
-    <TouchableOpacity style={styles.cakeCard}>
-      <Image
-        source={require("../assets/splash.png")}
-        style={styles.cakeImage}
-      />
-      <Text style={styles.cakeName}>Cake Name</Text>
-      <View style={styles.cakeInfoRow}>
-        <Icon name="fire" size={16} color="#ff66b2" />
-        <Text style={styles.cakeCalories}>200 Calories</Text>
-      </View>
-      <Text style={styles.cakePrice}>$50.00</Text>
-    </TouchableOpacity>
-  </View>
-</View>
     </ScrollView>
   );
 };
@@ -274,7 +276,7 @@ const styles = StyleSheet.create({
   cakeRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    flexWrap: "wrap", 
+    flexWrap: "wrap",
   },
   cakeCard: {
     width: "48%",
@@ -289,7 +291,6 @@ const styles = StyleSheet.create({
     resizeMode: "cover",
     borderRadius: 10,
     backgroundColor: "#f9f9f9",
-  
   },
   cakeName: {
     fontSize: 16,

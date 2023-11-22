@@ -6,7 +6,7 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  ScrollView,
+  // ScrollView,
   KeyboardAvoidingView,
   SafeAreaView,
   ActivityIndicator,
@@ -19,6 +19,7 @@ import { getFirestore, collection, doc, setDoc } from "firebase/firestore";
 import app from "../firebase/config";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { useToast } from "native-base";
+import { SafeAreaView } from "react-native-safe-area-context";
 // import DocumentPicker from 'react-native-document-picker';
 const RegisterBakerySchema = yup.object({
   ownername: yup.string().required("Owner's Name is required"),
@@ -50,7 +51,7 @@ const RegisterBakerySchema = yup.object({
     .string()
     .matches(/^[0-9]+$/, "Must be only digits")
     .required("Tax is required"),
-    bakeryImage: yup.mixed().required("Bakery Image is required"),
+  bakeryImage: yup.mixed().required("Bakery Image is required"),
 });
 
 const RegisterBakery = () => {
@@ -267,7 +268,6 @@ const RegisterBakery = () => {
 // const styles = StyleSheet.create({
 //   // Existing styles...
 
-  
 // });
 
 export default RegisterBakery;
