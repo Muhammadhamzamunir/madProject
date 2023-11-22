@@ -113,7 +113,7 @@ function MainContainer() {
         <Stack.Screen
           name="RegisterBakery"
           component={RegisterBakery}
-          options={{ headerShown: false }}
+          options={{ headerShown: true }}
         />
         <Stack.Screen
           name="Settings"
