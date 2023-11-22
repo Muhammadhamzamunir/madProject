@@ -10,7 +10,8 @@ export const AuthContextApi = ({ children }) => {
   const auth = getAuth();
 
   useEffect(async () => {
-    loadUserFromStorage();
+    //  AsyncStorage.removeItem('user')
+     loadUserFromStorage();
   }, []);
 
   const loadUserFromStorage = () => {

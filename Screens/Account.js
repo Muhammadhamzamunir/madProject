@@ -3,7 +3,7 @@ import {
   StyleSheet,
   Text,
   View,
-  SafeAreaView,
+  // SafeAreaView,
   TouchableOpacity,
   Button,
   Image,
@@ -16,6 +16,7 @@ import { styles } from "./Signup";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import app from "../firebase/config";
 import { useAuth } from "../AuthContextApi";
+import { SafeAreaView } from 'react-native-safe-area-context';
 const Account = () => {
   const user = useAuth();
   const [isModalVisible, setModalVisible] = useState(false);
@@ -28,6 +29,7 @@ const Account = () => {
     navigation.navigate("Settings");
   };
   return (
+    // <SafeAreaView>
     <SafeAreaView style={styles.container}>
       <View style={styles.topContainer}>
         <TouchableOpacity
@@ -164,6 +166,7 @@ const Account = () => {
       </Modal>
       {/* ----------------------------Modal End--------------------------------------------------------------------------*/}
     </SafeAreaView>
+    // </SafeAreaView>
   );
 };
 
