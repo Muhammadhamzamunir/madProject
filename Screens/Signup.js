@@ -375,6 +375,19 @@ export const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
   },
+  halfInputContainer: {
+    flex: 1,
+    width: "48%",
+    marginRight: "2%",
+  },
+  halfInput: {
+    height: 45,
+    padding: 10,
+    borderRadius: 10,
+    borderColor: Colors.primaryColor,
+    borderWidth: 1,
+    marginBottom: 10,
+  },
 });
 
 export default Signup;

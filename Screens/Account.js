@@ -53,6 +53,8 @@ const Account = () => {
           </TouchableOpacity>
         </View>
       )}
+      
+
       <View style={customCSS.regbakeryView}>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <Icon name="bullhorn" size={25} color={Colors.primaryColor} />
@@ -77,7 +79,7 @@ const Account = () => {
             <Text> Click On The Button Now!👇</Text>
             <TouchableOpacity
               style={customCSS.registerNowButton}
-              onPress={() => console.log("Register Now pressed")}
+              onPress={() => navigation.navigate("RegisterBakery")}
             >
               <Text style={customCSS.registerNowText}>Register Now</Text>
             </TouchableOpacity>
@@ -203,4 +205,5 @@ export const customCSS = StyleSheet.create({
     height: 200,
     overflow: "",
   },
+  
 });
