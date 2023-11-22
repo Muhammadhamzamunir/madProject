@@ -25,19 +25,12 @@ const Account = () => {
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
-  const settingButtonHandle = () => {
-    navigation.navigate("Settings");
-  };
+ 
   return (
     // <SafeAreaView>
     <SafeAreaView style={styles.container}>
       <View style={styles.topContainer}>
-        <TouchableOpacity
-          style={styles.settingIcon}
-          onPress={settingButtonHandle}
-        >
-          <Icon name="gear" size={23} color="black" />
-        </TouchableOpacity>
+       
       </View>
       {!user && (
         <View style={styles.registrationContainer}>
@@ -64,7 +57,7 @@ const Account = () => {
               fontSize: 28,
               fontWeight: "bold",
               marginLeft: 5,
-              fontFamily: "cursive",
+              // fontFamily: "cursive",
             }}
           >
             Register Your Bakery

@@ -6,9 +6,9 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  // ScrollView,
+  ScrollView,
   KeyboardAvoidingView,
-  SafeAreaView,
+  // SafeAreaView,
   ActivityIndicator,
 } from "react-native";
 import { Formik } from "formik";

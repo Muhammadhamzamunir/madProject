@@ -4,7 +4,17 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
 import Ionicons from "react-native-vector-icons/Ionicons";
-
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+  KeyboardAvoidingView,
+  // SafeAreaView,
+  ActivityIndicator,
+} from "react-native";
 import { useAuth } from "./AuthContextApi";
 import Colors from "./assets/Colors";
 import Main from "./Screens/Home";
@@ -59,10 +69,23 @@ const MainTabNavigator = () => {
       ) : (
         <Tab.Screen name={cartName} component={Login} />
       )}
-      <Tab.Screen
+     <Tab.Screen
         name={acountName}
         component={Account}
-        options={{ headerShown: false }}
+        options={({ navigation }) => ({
+          headerShown: true,
+          headerTitle: "Account",
+          headerRight: () => (
+            <TouchableOpacity
+              style={{ marginRight: 15 }}
+              onPress={() => {
+                navigation.navigate("Settings");
+              }}
+            >
+              <Ionicons name="settings" size={24} color="black" />
+            </TouchableOpacity>
+          ),
+        })}
       />
     </Tab.Navigator>
   );
