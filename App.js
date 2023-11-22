@@ -3,7 +3,7 @@ import { Center, NativeBaseProvider } from 'native-base';
 import MainContainer from './MainContainer';
 import { AuthContextApi } from './AuthContextApi';
 import { addEventListener } from "@react-native-community/netinfo";
-
+// navigator.geolocation = require('@react-native-community/geolocation');
 import { View, Text,Image } from "react-native";
 
 export default function App() {

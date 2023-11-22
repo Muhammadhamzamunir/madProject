@@ -54,7 +54,7 @@ const Account = () => {
           <Icon name="bullhorn" size={25} color={Colors.primaryColor} />
           <Text
             style={{
-              fontSize: 28,
+              fontSize: 25,
               fontWeight: "bold",
               marginLeft: 5,
               // fontFamily: "cursive",
@@ -63,14 +63,14 @@ const Account = () => {
             Register Your Bakery
           </Text>
         </View>
-        <View style={{ flexDirection: "row" }}>
-          <View style={{ flex: 0.9 }}>
+        <View style={{ flexDirection: "row"}}>
+          <View style={{ flex: 0.60}}>
             <Text style={customCSS.regBakeryText}>
               A Good Platform to grow your business. Join us Now!😎 and Enjoy
               lot of Traffic on your website and earn lot of Money.🥳🎉
               {"\n"}
             </Text>
-            <Text> Click On The Button Now!👇</Text>
+            <Text > Click On The Button Now!👇</Text>
             <TouchableOpacity
               style={customCSS.registerNowButton}
               onPress={() => navigation.navigate("RegisterBakery")}
@@ -78,7 +78,7 @@ const Account = () => {
               <Text style={customCSS.registerNowText}>Register Now</Text>
             </TouchableOpacity>
           </View>
-          <View style={{ flex: 0.5 }}>
+          <View style={{ flex: 0.40,marginLeft:10 }}>
             <Image
               source={require("../assets/click.png")}
               style={customCSS.img}
@@ -166,6 +166,7 @@ export default Account;
 export const customCSS = StyleSheet.create({
   regbakeryView: {
     padding: 10,
+    paddingBottom:5,
     borderTopWidth: 1,
     borderTopColor: Colors.grey,
     borderBlockColor: Colors.grey,
@@ -173,9 +174,10 @@ export const customCSS = StyleSheet.create({
     backgroundColor: "#f6e4f3",
   },
   regBakeryText: {
-    padding: 8,
+    padding: 6,
     color: "grey",
     marginTop: 4,
+    paddingBottom:0,
   },
   registerNowButton: {
     borderWidth: 3,
@@ -183,7 +185,7 @@ export const customCSS = StyleSheet.create({
     borderRadius: 5,
     paddingVertical: 5,
     paddingHorizontal: 10,
-    marginTop: 10,
+    marginTop: 6,
   },
   registerNowText: {
     color: Colors.primaryColor,
@@ -196,8 +198,9 @@ export const customCSS = StyleSheet.create({
     marginTop: -14,
     marginBottom: 0,
     padding: 0,
-    width: "100%",
+    width: "130%",
     height: 200,
-    overflow: "",
+    // marginLeft:50
+    resizeMode:"contain"
   },
 });

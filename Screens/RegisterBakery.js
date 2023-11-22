@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { styles } from "./Signup";
 import {
   View,
@@ -8,10 +8,13 @@ import {
   StyleSheet,
   ScrollView,
   KeyboardAvoidingView,
-  // SafeAreaView,
+  Image,
+  PermissionsAndroid,
   ActivityIndicator,
+  Platform,
 } from "react-native";
 import { Formik } from "formik";
+
 import * as yup from "yup";
 import Colors from "../assets/Colors";
 import { useNavigation } from "@react-navigation/native";
@@ -21,6 +24,8 @@ import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { useToast } from "native-base";
 import { SafeAreaView } from "react-native-safe-area-context";
 // import DocumentPicker from 'react-native-document-picker';
+import Icon from "react-native-vector-icons/FontAwesome";
+
 const RegisterBakerySchema = yup.object({
   ownername: yup.string().required("Owner's Name is required"),
   bakeryname: yup.string().required("Bakery Name is required"),
@@ -38,7 +43,7 @@ const RegisterBakerySchema = yup.object({
   priceForDecoration: yup
     .string()
     .matches(/^[0-9]+$/, "Must be only digits")
-    .required("Price for Decoration is required"),
+    .required("Decoration Price is required"),
   priceForTiers: yup
     .string()
     .matches(/^[0-9]+$/, "Must be only digits")
@@ -52,6 +57,9 @@ const RegisterBakerySchema = yup.object({
     .matches(/^[0-9]+$/, "Must be only digits")
     .required("Tax is required"),
   bakeryImage: yup.mixed().required("Bakery Image is required"),
+  location: yup.string().required("Address is required"),
+  country: yup.string().required("Country is required"),
+  zipCode: yup.string().required("zipCode is required"),
 });
 
 const RegisterBakery = () => {
@@ -60,6 +68,7 @@ const RegisterBakery = () => {
   const toast = useToast();
   const [loading, setLoading] = useState(false);
   const [bakeryImage, setBakeryImage] = useState(null);
+  const [currentLocation, setCurrentLocation] = useState("");
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -82,6 +91,9 @@ const RegisterBakery = () => {
               priceForShape: "",
               tax: "",
               bakeryImage: null,
+              location: "",
+              country: "",
+              zipCode: "",
             }}
             validationSchema={RegisterBakerySchema}
             onSubmit={(values, { resetForm }) => {
@@ -108,7 +120,11 @@ const RegisterBakery = () => {
             }) => (
               <View style={styles.formContainer}>
                 {/* Bakery Information */}
-                <Text style={styles.title}>Register Your Bakery</Text>
+                <Image
+                  source={require("../assets/splash.png")}
+                  style={styles.image}
+                />
+                <Text style={{color:Colors.primaryColor,fontSize:29,fontWeight:"bold",padding:10}}>Register Your Bakery</Text>
                 <TextInput
                   style={styles.input}
                   placeholder="Owner's Name"
@@ -175,9 +191,48 @@ const RegisterBakery = () => {
                 <Text style={styles.errorText}>
                   {touched.timing && errors.timing}
                 </Text>
+                <Text style={{fontSize:24, fontWeight:"bold", color:"grey"}}>Location Information</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Address"
+                  value={values.location}
+                  onChangeText={handleChange("location")}
+                  onBlur={handleBlur("location")}
+                />
 
+                <Text style={styles.errorText}>
+                  {touched.location && errors.location}
+                </Text>
+
+                <View style={styles.rowContainer}>
+                  <View style={styles.halfInputContainer}>
+                    <TextInput
+                      style={styles.halfInput}
+                      placeholder="Country"
+                      value={values.country}
+                      onChangeText={handleChange("country")}
+                      onBlur={handleBlur("country")}
+                    />
+                    <Text style={[styles.errorText,{marginLeft:0}]}>
+                      {touched.country && errors.country}
+                    </Text>
+                  </View>
+                  <View style={styles.halfInputContainer}>
+                    <TextInput
+                      style={styles.halfInput}
+                      placeholder="Zip Code"
+                      value={values.zipCode}
+                      onChangeText={handleChange("zipCode")}
+                      onBlur={handleBlur("zipCode")}
+                      keyboardType="numeric"
+                    />
+                    <Text style={[styles.errorText,{marginLeft:0}]}>
+                      {touched.zipCode && errors.zipCode}
+                    </Text>
+                  </View>
+                </View>
                 {/* Customize Cake Info */}
-                <Text style={styles.title}>Customize Cake Info</Text>
+                <Text style={{fontSize:24, fontWeight:"bold", color:"grey"}}>Customize Cake Info</Text>
                 <View style={styles.rowContainer}>
                   <View style={styles.halfInputContainer}>
                     <TextInput
@@ -188,7 +243,7 @@ const RegisterBakery = () => {
                       value={values.pricePerPound}
                       keyboardType="numeric"
                     />
-                    <Text style={styles.errorText}>
+                    <Text style={[styles.errorText,{marginLeft:0}]}>
                       {touched.pricePerPound && errors.pricePerPound}
                     </Text>
                   </View>
@@ -201,7 +256,7 @@ const RegisterBakery = () => {
                       value={values.priceForDecoration}
                       keyboardType="numeric"
                     />
-                    <Text style={styles.errorText}>
+                    <Text style={[styles.errorText,{marginLeft:0}]}>
                       {touched.priceForDecoration && errors.priceForDecoration}
                     </Text>
                   </View>

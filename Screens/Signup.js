@@ -235,6 +235,7 @@ export const styles = StyleSheet.create({
   formContainer: {
     width: "100%",
     alignItems: "center",
+    paddingBottom:20
   },
   input: {
     height: 45,
@@ -249,6 +250,7 @@ export const styles = StyleSheet.create({
     // marginTop: 5,
     alignSelf: "flex-start",
     marginLeft: 30,
+    fontSize:12
   },
   image: {
     width: 300,
@@ -277,6 +279,7 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     margin: 10,
     alignSelf: "center",
+    paddingHorizontal:10
   },
   accountText: {
     fontSize: 16,
@@ -307,7 +310,7 @@ export const styles = StyleSheet.create({
     alignItems: "center",
   },
   registrationText: {
-    fontSize: 28,
+    fontSize: 27,
     fontWeight: "bold",
     marginBottom: 16,
   },
@@ -379,6 +382,7 @@ export const styles = StyleSheet.create({
     flex: 1,
     width: "48%",
     marginRight: "2%",
+    flexDirection:"column"
   },
   halfInput: {
     height: 45,
