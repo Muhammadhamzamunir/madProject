@@ -16,7 +16,7 @@ import { styles } from "./Signup";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import app from "../firebase/config";
 import { useAuth } from "../AuthContextApi";
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView } from "react-native-safe-area-context";
 const Account = () => {
   const user = useAuth();
   const [isModalVisible, setModalVisible] = useState(false);
@@ -55,7 +55,6 @@ const Account = () => {
           </TouchableOpacity>
         </View>
       )}
-      
 
       <View style={customCSS.regbakeryView}>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -208,5 +207,4 @@ export const customCSS = StyleSheet.create({
     height: 200,
     overflow: "",
   },
-  
 });
