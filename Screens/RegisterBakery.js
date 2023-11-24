@@ -23,9 +23,8 @@ import app from "../firebase/config";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { useToast } from "native-base";
 import { SafeAreaView } from "react-native-safe-area-context";
-// import DocumentPicker from 'react-native-document-picker';
 import Icon from "react-native-vector-icons/FontAwesome";
-
+import * as DocumentPicker from 'expo-document-picker';
 const RegisterBakerySchema = yup.object({
   ownername: yup.string().required("Owner's Name is required"),
   bakeryname: yup.string().required("Bakery Name is required"),
@@ -69,6 +68,42 @@ const RegisterBakery = () => {
   const [loading, setLoading] = useState(false);
   const [bakeryImage, setBakeryImage] = useState(null);
   const [currentLocation, setCurrentLocation] = useState("");
+  const [selectedImage, setSelectedImage] = useState(null);
+  const handleImagePicker = async()=>{
+    try {
+      const result = await DocumentPicker.getDocumentAsync({
+        type: 'image/*',
+      });
+
+      if (!result.cancelled) {
+        setSelectedImage(result.assets[0].uri);
+      } else {
+        console.log('Image picking canceled');
+      }
+    } catch (error) {
+      console.error('Error picking image:', error);
+    }
+  }
+
+ const handleSubmit=()=>{
+  const db = getFirestore(app);
+  const usersCollection = collection(db, "users");
+  const userDocRef = doc(usersCollection, createdUser.uid);
+  setDoc(userDocRef, {
+    username: values.username,
+    email: values.email,
+    password: values.password,
+    phone: values.phoneNumber,
+  });
+   
+
+ }
+  
+
+
+
+
+
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -191,7 +226,23 @@ const RegisterBakery = () => {
                 <Text style={styles.errorText}>
                   {touched.timing && errors.timing}
                 </Text>
-                <Text style={{fontSize:24, fontWeight:"bold", color:"grey"}}>Location Information</Text>
+                <View style={{ flexDirection: "row", justifyContent:"space-between", alignItems: "center",marginHorizontal:30 }}>
+                  <TouchableOpacity
+                    style={{ backgroundColor: Colors.primaryColor, padding: 10, borderRadius: 15, marginRight: 70 }}
+                    onPress={handleImagePicker}
+                  >
+                    <Text style={styles.regButtonText}>Upload Image</Text>
+                  </TouchableOpacity>
+                  {selectedImage ? (
+                    <Image source={{ uri: selectedImage }} style={styles.image} />
+                  ) : (
+                    <Image source={require('../assets/empty-image.png')} style={styles.image} />
+                  )}
+                </View>
+
+
+                {/* location information */}
+                <Text style={{fontSize:24, fontWeight:"bold", color:"grey",marginVertical:10}}>Location Information</Text>
                 <TextInput
                   style={styles.input}
                   placeholder="Address"

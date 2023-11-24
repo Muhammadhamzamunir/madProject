@@ -391,6 +391,10 @@ export const styles = StyleSheet.create({
     borderColor: Colors.primaryColor,
     borderWidth: 1,
     marginBottom: 10,
+  }, image: {
+    width: 150,
+    height: 100,
+    // marginTop: 20,
   },
 });
 
