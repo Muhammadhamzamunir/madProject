@@ -1,64 +1,69 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { doc, getDoc, getFirestore,collection } from "firebase/firestore";
+import { doc, getDoc, getFirestore, collection } from "firebase/firestore";
 import app from "./firebase/config";
+
 const AuthContext = createContext();
 
 export const AuthContextApi = ({ children }) => {
   const [user, setUser] = useState(null);
   const auth = getAuth();
-
-  useEffect(async () => {
-    //  AsyncStorage.removeItem('user')
-     loadUserFromStorage();
+    const updateUserInContext = (updatedUser) => {
+    setUser(updatedUser);
+  };
+  useEffect(() => {
+    loadUserFromStorage();
   }, []);
 
   const loadUserFromStorage = () => {
-    AsyncStorage.getItem("user").then((user) => {
-      setUser(user);
-      console.log("user from storage: ", user);
+    AsyncStorage.getItem("user").then((userData) => {
+      if (userData) {
+        const parsedUserData = JSON.parse(userData);
+        setUser(parsedUserData);
+        console.log("user from storage: ", parsedUserData);
+      }
     });
   };
+
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        const userId = user.uid;
+    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+      if (firebaseUser) {
+        const userId = firebaseUser.uid;
         const db = getFirestore(app);
         const usersCollection = collection(db, "users");
         const authUserDoc = doc(usersCollection, userId);
-        getDoc(authUserDoc)
-          .then((docSnapshot) => {
-            if (docSnapshot.exists()) {
-              const userData = docSnapshot.data();
-              const userDataString = JSON.stringify(userData);
-              setUser(userData);
-              AsyncStorage.setItem('user', userDataString).then(() => {
-                console.log('User stored in local storage');
-              });
-             
-            } 
-          })
-        
-      } else {
-       
-        AsyncStorage.removeItem('user').then(() => {
-          console.log('User removed from local storage');
+
+        getDoc(authUserDoc).then((docSnapshot) => {
+          if (docSnapshot.exists()) {
+            const userData = docSnapshot.data();
+            const updatedUserData = { ...userData, uid: userId };
+            const userDataString = JSON.stringify(updatedUserData);
+
+            setUser(updatedUserData);
+
+            AsyncStorage.setItem("user", userDataString).then(() => {
+              console.log("User stored in local storage");
+            });
+          }
         });
-  
-        setUser(null); 
-       
+      } else {
+        AsyncStorage.removeItem("user").then(() => {
+          console.log("User removed from local storage");
+        });
+
+        setUser(null);
       }
     });
-  
-     return () => {
+
+    return () => {
       unsubscribe();
     };
   }, [auth]);
-  
-  return <AuthContext.Provider value={user}>{children}</AuthContext.Provider>;
+
+  return <AuthContext.Provider value={{user,updateUserInContext}}>{children}</AuthContext.Provider>;
 };
 
 export const useAuth = () => {
   return useContext(AuthContext);
-};
+}; 

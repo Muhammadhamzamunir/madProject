@@ -1,8 +1,13 @@
-const grey = "#E0E0E0";
-// const primaryColor = "#FFB6C1";
-const primaryColor = "#ff78a9";
 
 
-// const primaryColor = "red";
-const secondaryColor = "#ffff";
-export default { grey, primaryColor, secondaryColor };
+const Colors = {
+    primaryColor: "#ff78a9",
+    secondaryColor: "#ffff",
+    lightGray: "#ecf0f1",
+    darkGray: "#2c3e50",  
+    mediumGray: "#7f8c8d",
+    grey : "#E0E0E0"  
+  };
+  
+  export default Colors;
+  

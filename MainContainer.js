@@ -24,17 +24,19 @@ import Account from "./Screens/Account";
 import Cart from "./Screens/Cart";
 import RegisterBakery from "./Screens/RegisterBakery";
 import SettingScreen from "./Screens/SettingScreen";
+import BakeryDetailed from "./Screens/BakeryDetailed";
+import MyStore from "./Screens/MyStore";
 const homeName = "Home";
 const loginName = "Login";
 const signupName = "Signup";
 const acountName = "Account";
 const cartName = "Cart";
-
+const mystoreName = "MyStore";
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
 const MainTabNavigator = () => {
-  const user = useAuth();
+  const { user, updateUserInContext } = useAuth();
 
   return (
     <Tab.Navigator
@@ -51,6 +53,8 @@ const MainTabNavigator = () => {
             iconName = focused ? "home" : "home-outline";
           } else if (rn === cartName) {
             iconName = focused ? "cart" : "cart-outline";
+          } else if (rn === mystoreName) {
+            iconName = focused ? "heart" : "heart-outline";
           } else if (rn === acountName) {
             iconName = focused ? "settings" : "settings-outline";
           }
@@ -69,7 +73,11 @@ const MainTabNavigator = () => {
       ) : (
         <Tab.Screen name={cartName} component={Login} />
       )}
-     <Tab.Screen
+      {user && user.isBakeryRegistered && (
+        <Tab.Screen name={mystoreName} component={MyStore} />
+      )}
+
+      <Tab.Screen
         name={acountName}
         component={Account}
         options={({ navigation }) => ({
@@ -92,6 +100,7 @@ const MainTabNavigator = () => {
 };
 
 function MainContainer() {
+  const { user, updateUserInContext } = useAuth();
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName={homeName}>
@@ -111,13 +120,27 @@ function MainContainer() {
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="RegisterBakery"
-          component={RegisterBakery}
-          options={{ headerShown: true }}
-        />
-        <Stack.Screen
           name="Settings"
           component={SettingScreen}
+          options={{ headerShown: true }}
+        />
+
+        {user ? (
+          <Stack.Screen
+            name="RegisterBakery"
+            component={RegisterBakery}
+            options={{ headerShown: true }}
+          />
+        ) : (
+          <Stack.Screen
+            name="RegisterBakery"
+            component={Login}
+            options={{ headerShown: true }}
+          />
+        )}
+        <Stack.Screen
+          name="BakeryDetail"
+          component={BakeryDetailed}
           options={{ headerShown: true }}
         />
       </Stack.Navigator>

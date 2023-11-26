@@ -6,7 +6,7 @@ import { useAuth } from "../AuthContextApi";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import app from "../firebase/config";
 const SettingScreen = () => {
-  const user = useAuth();
+  const { user, updateUserInContext } = useAuth();
 
   return (
     <View style={{ flex: 1 }}>

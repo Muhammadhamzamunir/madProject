@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect,useCallback } from "react";
 import {
   View,
   Text,
@@ -7,22 +7,32 @@ import {
   TextInput,
   StyleSheet,
   TouchableOpacity,
+  RefreshControl,
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import Colors from "../assets/Colors";
 import { SliderBox } from "react-native-image-slider-box";
 import { useAuth } from "../AuthContextApi";
+import ImageSlider from "./ImageSlider";
+import  BakeryCard from "./BakeryCard";
 const Home = () => {
-  const user = useAuth();
+  const { user, updateUserInContext } = useAuth();
+  const [refreshing, setRefreshing] = useState(false);
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
 
-  const [images, setImages] = useState([
-    "https://source.unsplash.com/1024x768/?BirthdayCake",
-    "https://source.unsplash.com/1024x768/?pink",
-    "https://source.unsplash.com/1024x768/?cakes",
-    "https://source.unsplash.com/1024x768/?cake",
-  ]);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 1500);
+  }, []);
+  
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView
+      style={styles.container}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={Colors.primaryColor}  />
+      }
+    >
       {/* User Profile  */}
       <View style={styles.header}>
         <View style={styles.userProfileContainer}>
@@ -60,18 +70,8 @@ const Home = () => {
       </View>
       {/* end earch bar */}
 
-      {/* Slider */}
-      <SliderBox
-        images={images}
-        dotColor="pink"
-        inactiveDotColor="white"
-        activeDotColor="black"
-        paginationBoxVerticalPadding={20}
-        autoplay
-        circleLoop
-        ImageComponentStyle={{ borderRadius: 15, width: "97%", marginTop: 5 }}
-      />
-
+     
+        <ImageSlider/>
       {/* Categories */}
       <View style={styles.categoryContainer}>
         <View
@@ -114,7 +114,7 @@ const Home = () => {
           </TouchableOpacity>
         </ScrollView>
       </View>
-
+      {/* popularCakesContainer */}
       <View style={styles.popularCakesContainer}>
         <Text style={styles.popularCakesHeading}>Popular Cakes</Text>
         <View style={styles.cakeRow}>
@@ -157,6 +157,12 @@ const Home = () => {
           </TouchableOpacity>
         </View>
       </View>
+
+      {/* Bakeries Section */}
+      <View style={styles.bakeriesContainer}>
+        <Text style={styles.bakeriesHeading}>All Registered Bakeries</Text>
+        <BakeryCard  onRefresh={onRefresh}/>
+      </View>
     </ScrollView>
   );
 };
@@ -195,6 +201,16 @@ const styles = StyleSheet.create({
   userAddress: {
     fontSize: 13,
     color: "#777",
+  },
+  bakeriesContainer: {
+    padding: 20,
+    marginTop: 10,
+  },
+  bakeriesHeading: {
+    fontSize: 25,
+    fontWeight: "bold",
+    color: "#000",
+    marginBottom: 10,
   },
   searchContainer: {
     shadowOpacity: 0.6,

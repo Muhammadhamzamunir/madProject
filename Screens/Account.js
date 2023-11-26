@@ -18,20 +18,19 @@ import app from "../firebase/config";
 import { useAuth } from "../AuthContextApi";
 import { SafeAreaView } from "react-native-safe-area-context";
 const Account = () => {
-  const user = useAuth();
+  const { user, updateUserInContext } = useAuth();
+ 
   const [isModalVisible, setModalVisible] = useState(false);
   const auth = getAuth(app);
   const navigation = useNavigation();
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
- 
+
   return (
     // <SafeAreaView>
     <SafeAreaView style={styles.container}>
-      <View style={styles.topContainer}>
-       
-      </View>
+      <View style={styles.topContainer}></View>
       {!user && (
         <View style={styles.registrationContainer}>
           <Text style={styles.registrationText}>Are You Ready To Join Us?</Text>
@@ -49,43 +48,87 @@ const Account = () => {
         </View>
       )}
 
-      <View style={customCSS.regbakeryView}>
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Icon name="bullhorn" size={25} color={Colors.primaryColor} />
-          <Text
-            style={{
-              fontSize: 25,
-              fontWeight: "bold",
-              marginLeft: 5,
-              // fontFamily: "cursive",
-            }}
-          >
-            Register Your Bakery
-          </Text>
-        </View>
-        <View style={{ flexDirection: "row"}}>
-          <View style={{ flex: 0.60}}>
-            <Text style={customCSS.regBakeryText}>
-              A Good Platform to grow your business. Join us Now!😎 and Enjoy
-              lot of Traffic on your website and earn lot of Money.🥳🎉
-              {"\n"}
-            </Text>
-            <Text > Click On The Button Now!👇</Text>
-            <TouchableOpacity
-              style={customCSS.registerNowButton}
-              onPress={() => navigation.navigate("RegisterBakery")}
+      {!user ? (
+        <View style={customCSS.regbakeryView}>
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <Icon name="bullhorn" size={25} color={Colors.primaryColor} />
+            <Text
+              style={{
+                fontSize: 25,
+                fontWeight: "bold",
+                marginLeft: 5,
+                // fontFamily: "cursive",
+              }}
             >
-              <Text style={customCSS.registerNowText}>Register Now</Text>
-            </TouchableOpacity>
+              Register Your Bakery
+            </Text>
           </View>
-          <View style={{ flex: 0.40,marginLeft:10 }}>
-            <Image
-              source={require("../assets/click.png")}
-              style={customCSS.img}
-            />
+          <View style={{ flexDirection: "row" }}>
+            <View style={{ flex: 0.6 }}>
+              <Text style={customCSS.regBakeryText}>
+                A Good Platform to grow your business. Join us Now!😎 and Enjoy
+                lot of Traffic on your website and earn lot of Money.🥳🎉
+                {"\n"}
+              </Text>
+              <Text> Click On The Button Now!👇</Text>
+              <TouchableOpacity
+                style={customCSS.registerNowButton}
+                onPress={() => navigation.navigate("RegisterBakery")}
+              >
+                <Text style={customCSS.registerNowText}>Register Now</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={{ flex: 0.4, marginLeft: 10 }}>
+              <Image
+                source={require("../assets/click.png")}
+                style={customCSS.img}
+              />
+            </View>
           </View>
         </View>
-      </View>
+      ) : (
+        user &&
+        !user.isBakeryRegistered && (
+          <View style={customCSS.regbakeryView}>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <Icon name="bullhorn" size={25} color={Colors.primaryColor} />
+              <Text
+                style={{
+                  fontSize: 25,
+                  fontWeight: "bold",
+                  marginLeft: 5,
+                  // fontFamily: "cursive",
+                }}
+              >
+                Register Your Bakery
+              </Text>
+            </View>
+            <View style={{ flexDirection: "row" }}>
+              <View style={{ flex: 0.6 }}>
+                <Text style={customCSS.regBakeryText}>
+                  A Good Platform to grow your business. Join us Now!😎 and
+                  Enjoy lot of Traffic on your website and earn lot of
+                  Money.🥳🎉
+                  {"\n"}
+                </Text>
+                <Text> Click On The Button Now!👇</Text>
+                <TouchableOpacity
+                  style={customCSS.registerNowButton}
+                  onPress={() => navigation.navigate("RegisterBakery")}
+                >
+                  <Text style={customCSS.registerNowText}>Register Now</Text>
+                </TouchableOpacity>
+              </View>
+              <View style={{ flex: 0.4, marginLeft: 10 }}>
+                <Image
+                  source={require("../assets/click.png")}
+                  style={customCSS.img}
+                />
+              </View>
+            </View>
+          </View>
+        )
+      )}
 
       {/* ------------------------------Modal Start---------------------------------------------------------------- */}
       <Modal isVisible={isModalVisible} onBackdropPress={toggleModal}>
@@ -166,7 +209,7 @@ export default Account;
 export const customCSS = StyleSheet.create({
   regbakeryView: {
     padding: 10,
-    paddingBottom:5,
+    paddingBottom: 5,
     borderTopWidth: 1,
     borderTopColor: Colors.grey,
     borderBlockColor: Colors.grey,
@@ -177,7 +220,7 @@ export const customCSS = StyleSheet.create({
     padding: 6,
     color: "grey",
     marginTop: 4,
-    paddingBottom:0,
+    paddingBottom: 0,
   },
   registerNowButton: {
     borderWidth: 3,
@@ -201,6 +244,6 @@ export const customCSS = StyleSheet.create({
     width: "130%",
     height: 200,
     // marginLeft:50
-    resizeMode:"contain"
+    resizeMode: "contain",
   },
 });

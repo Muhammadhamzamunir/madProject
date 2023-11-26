@@ -82,6 +82,7 @@ const Signup = () => {
                     email: values.email,
                     password: values.password,
                     phone: values.phoneNumber,
+                    isBakeryRegistered:false
                   });
                   setLoading(false);
                   toast.show({
