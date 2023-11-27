@@ -117,7 +117,7 @@ const Home = () => {
       </View> */}
       <CakeList/>
       {/* popularCakesContainer */}
-      <View style={styles.popularCakesContainer}>
+      {/* <View style={styles.popularCakesContainer}>
         <Text style={styles.popularCakesHeading}>Popular Cakes</Text>
         <View style={styles.cakeRow}>
           <TouchableOpacity style={styles.cakeCard}>
@@ -158,7 +158,7 @@ const Home = () => {
             <Text style={styles.cakePrice}>$50.00</Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </View> */}
 
       {/* Bakeries Section */}
       <View style={styles.bakeriesContainer}>

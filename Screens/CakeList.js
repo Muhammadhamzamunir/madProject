@@ -1,5 +1,7 @@
+// CakeList.js
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, FlatList, ActivityIndicator } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { collection, getDocs, getFirestore } from 'firebase/firestore';
 import app from '../firebase/config';
 
@@ -7,6 +9,7 @@ const CakeList = () => {
   const [cakes, setCakes] = useState([]);
   const [loading, setLoading] = useState(true);
   const db = getFirestore(app);
+  const navigation = useNavigation();
 
   useEffect(() => {
     const getAllProducts = async () => {
@@ -42,8 +45,13 @@ const CakeList = () => {
     getAllProducts();
   }, []);
 
+  const handleCakePress = (cakeId) => {
+    // Navigate to the cake detail page with the cake ID
+    navigation.navigate('CakeDetailPage', { cakeId });
+  };
+
   const renderCakeItem = ({ item }) => (
-    <TouchableOpacity style={styles.cakeCard}>
+    <TouchableOpacity style={styles.cakeCard} onPress={() => handleCakePress(item.id)}>
       <Image source={{ uri: item.image || 'https://via.placeholder.com/150' }} style={styles.cakeImage} />
       <Text style={styles.cakeName}>{item.productName}</Text>
       <View style={styles.cakeInfoRow}>
@@ -68,6 +76,8 @@ const CakeList = () => {
         keyExtractor={(item) => item.id}
         renderItem={renderCakeItem}
         numColumns={2}
+        horizontalGap={16} // Adjust the horizontal gap as needed
+        verticalGap={16}   // Adjust the vertical gap as needed
       />
     </View>
   );

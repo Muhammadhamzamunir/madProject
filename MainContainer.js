@@ -27,6 +27,7 @@ import SettingScreen from "./Screens/SettingScreen";
 import BakeryDetailed from "./Screens/BakeryDetailed";
 import MyStore from "./Screens/MyStore";
 import RegisterProduct from "./Screens/RegisterProduct";
+import CakeDetailPage from "./Screens/CakeDetailPage";
 const homeName = "Home";
 const loginName = "Login";
 const signupName = "Signup";
@@ -147,6 +148,11 @@ function MainContainer() {
          <Stack.Screen
           name="RegisterProduct"
           component={RegisterProduct}
+          options={{ headerShown: true }}
+        />
+        <Stack.Screen
+          name="CakeDetailPage"
+          component={CakeDetailPage}
           options={{ headerShown: true }}
         />
       </Stack.Navigator>
