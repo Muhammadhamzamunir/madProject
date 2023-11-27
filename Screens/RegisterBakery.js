@@ -30,38 +30,38 @@ import { useAuth } from "../AuthContextApi";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 const RegisterBakerySchema = yup.object({
   ownername: yup.string().required("Owner's Name is required"),
-  // bakeryname: yup.string().required("Bakery Name is required"),
-  // speciality: yup.string().required("Speciality is required"),
-  // contactNumber: yup
-  //   .string()
-  //   .matches(/^[0-9]+$/, "Must be only digits")
-  //   .required("Contact Number is required"),
-  // email: yup.string().email("Invalid email").required("Email is required"),
-  // timing: yup.string().required("Timing is required"),
-  // pricePerPound: yup
-  //   .string()
-  //   .matches(/^[0-9]+$/, "Must be only digits")
-  //   .required("Price per Pound is required"),
-  // priceForDecoration: yup
-  //   .string()
-  //   .matches(/^[0-9]+$/, "Must be only digits")
-  //   .required("Decoration Price is required"),
-  // priceForTiers: yup
-  //   .string()
-  //   .matches(/^[0-9]+$/, "Must be only digits")
-  //   .required("Price for Tiers is required"),
-  // priceForShape: yup
-  //   .string()
-  //   .matches(/^[0-9]+$/, "Must be only digits")
-  //   .required("Price for Shape is required"),
-  // tax: yup
-  //   .string()
-  //   .matches(/^[0-9]+$/, "Must be only digits")
-  //   .required("Tax is required"),
-  // bakeryImage: yup.mixed().required("Bakery Image is required"),
-  // location: yup.string().required("Address is required"),
-  // country: yup.string().required("Country is required"),
-  // zipCode: yup.string().required("zipCode is required"),
+  bakeryname: yup.string().required("Bakery Name is required"),
+  speciality: yup.string().required("Speciality is required"),
+  contactNumber: yup
+    .string()
+    .matches(/^[0-9]+$/, "Must be only digits")
+    .required("Contact Number is required"),
+  email: yup.string().email("Invalid email").required("Email is required"),
+  timing: yup.string().required("Timing is required"),
+  pricePerPound: yup
+    .string()
+    .matches(/^[0-9]+$/, "Must be only digits")
+    .required("Price per Pound is required"),
+  priceForDecoration: yup
+    .string()
+    .matches(/^[0-9]+$/, "Must be only digits")
+    .required("Decoration Price is required"),
+  priceForTiers: yup
+    .string()
+    .matches(/^[0-9]+$/, "Must be only digits")
+    .required("Price for Tiers is required"),
+  priceForShape: yup
+    .string()
+    .matches(/^[0-9]+$/, "Must be only digits")
+    .required("Price for Shape is required"),
+  tax: yup
+    .string()
+    .matches(/^[0-9]+$/, "Must be only digits")
+    .required("Tax is required"),
+  bakeryImage: yup.mixed().required("Bakery Image is required"),
+  location: yup.string().required("Address is required"),
+  country: yup.string().required("Country is required"),
+  zipCode: yup.string().required("zipCode is required"),
 });
 
 const RegisterBakery = () => {

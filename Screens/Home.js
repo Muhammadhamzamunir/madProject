@@ -15,6 +15,7 @@ import { SliderBox } from "react-native-image-slider-box";
 import { useAuth } from "../AuthContextApi";
 import ImageSlider from "./ImageSlider";
 import  BakeryCard from "./BakeryCard";
+import CakeList from "./CakeList";
 const Home = () => {
   const { user, updateUserInContext } = useAuth();
   const [refreshing, setRefreshing] = useState(false);
@@ -73,7 +74,7 @@ const Home = () => {
      
         <ImageSlider/>
       {/* Categories */}
-      <View style={styles.categoryContainer}>
+      {/* <View style={styles.categoryContainer}>
         <View
           style={{
             flex: 1,
@@ -113,7 +114,8 @@ const Home = () => {
             <Text style={styles.categoryButtonText}>Birthday</Text>
           </TouchableOpacity>
         </ScrollView>
-      </View>
+      </View> */}
+      <CakeList/>
       {/* popularCakesContainer */}
       <View style={styles.popularCakesContainer}>
         <Text style={styles.popularCakesHeading}>Popular Cakes</Text>

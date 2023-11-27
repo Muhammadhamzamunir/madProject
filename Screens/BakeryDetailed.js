@@ -2,10 +2,11 @@
 
 import React,{useState,useEffect} from "react";
 import { View, Text, Image, StyleSheet, ScrollView, ActivityIndicator } from "react-native";
-
+import { useRoute } from '@react-navigation/native';
 import Colors from "../assets/Colors";
 
 const BakeryDetailed = ({ route }) => {
+ 
   const { bakery } = route.params;
   const [imageLoading, setImageLoading] = useState(true);
   return (
@@ -28,6 +29,7 @@ const BakeryDetailed = ({ route }) => {
         <Text style={styles.ownerName}>{`By ${bakery.ownername}`}</Text>
         <Text style={styles.timing}>{`Opening Hours: ${bakery.timing}`}</Text>
         <View style={styles.separator} />
+       
         <Text style={styles.sectionHeading}>About Us</Text>
         <View style={styles.detailItem}>
           <Text style={styles.detailLabel}>Specialty:</Text>
