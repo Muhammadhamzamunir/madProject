@@ -58,7 +58,7 @@ const RegisterBakerySchema = yup.object({
     .string()
     .matches(/^[0-9]+$/, "Must be only digits")
     .required("Tax is required"),
-  bakeryImage: yup.mixed().required("Bakery Image is required"),
+  // bakeryImage: yup.mixed().required("Bakery Image is required"),
   location: yup.string().required("Address is required"),
   country: yup.string().required("Country is required"),
   zipCode: yup.string().required("zipCode is required"),
@@ -88,7 +88,7 @@ const RegisterBakery = () => {
   };
 
   const registerBakeryHandle = async (values) => {
-    
+    console.log("hello");
     try {
       setLoading(true);
      
@@ -124,14 +124,16 @@ const RegisterBakery = () => {
       // Get the download URL of the uploaded image
       const downloadURL = await getDownloadURL(storageRef);
       
-      // const currentUser = user.getCurrentUser();
+    
       const userDocRef = doc(collection(db, "users"), user.uid);
         updateDoc(userDocRef,{
           isBakeryRegistered:true
         })
-    // Create a bakery subcollection inside the user's document
-    const bakeryCollectionRef = collection(userDocRef, "bakery")
-      await setDoc(doc(bakeryCollectionRef), {
+
+    // Create a bakery subcollection
+    const bakeryCollectionRef = collection(db, "bakeries")
+    const bakeryDoc = doc(bakeryCollectionRef,user.uid)
+      await setDoc(bakeryDoc, {
         image: downloadURL,
         ownername: values.ownername,
         bakeryname: values.bakeryname,

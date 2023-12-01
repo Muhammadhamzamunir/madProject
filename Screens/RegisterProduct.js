@@ -22,12 +22,14 @@ import {
   setDoc,
   serverTimestamp,
 } from "firebase/firestore";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "firebase/storage";
 import * as DocumentPicker from "expo-document-picker";
 import { SelectList } from "react-native-dropdown-select-list";
 import app from "../firebase/config";
 import { useAuth } from "../AuthContextApi";
 import { useToast, NativeBaseProvider } from "native-base";
+import { getDatabase, ref, set } from "firebase/database";
+import uuid from 'react-native-uuid';
 const ProductSchema = yup.object({
   productName: yup.string().required("Product Name is required"),
   price: yup
@@ -44,13 +46,12 @@ const ProductSchema = yup.object({
 });
 
 const RegisterProduct = ({ route }) => {
- 
   const { bakeryId } = route.params;
- 
+
   const navigation = useNavigation();
   const [selectedImage, setSelectedImage] = useState(null);
   const [loading, setLoading] = useState(false);
-  const db = getFirestore(app);
+  const db = getDatabase(app);
   const storage = getStorage();
   const toast = useToast();
   const { user, updateUserInContext } = useAuth();
@@ -61,7 +62,6 @@ const RegisterProduct = ({ route }) => {
       });
 
       if (!result.cancelled) {
-       
         setSelectedImage(result.assets[0].uri);
       } else {
         console.log("Image picking canceled");
@@ -71,40 +71,46 @@ const RegisterProduct = ({ route }) => {
     }
   };
 
-  const registerProductHandle = async (values,{ resetForm }) => {
+  const registerProductHandle = async (values, { resetForm }) => {
     try {
       setLoading(true);
 
       if (!selectedImage) {
-        console.error("Please select an image.");
+        toast.show({
+          title: "Upload Image",
+          status: "error",
+          placement: "top",
+          duration: 3000,
+          style: { top: "5%", backgroundColor: "#e74c3c" },
+        });
         setLoading(false);
         return;
       }
-      
 
       const timestamp = new Date().getTime();
       const fileExtension = selectedImage.split(".").pop().toLowerCase();
       const fileName = `product_image_${timestamp}.${fileExtension}`;
 
-      const storageRef = ref(storage, `product_images/${fileName}`);
+      const storageRef = sRef(storage, `product_images/${fileName}`);
       const response = await fetch(selectedImage);
       const blob = await response.blob();
 
       await uploadBytes(storageRef, blob);
       const downloadURL = await getDownloadURL(storageRef);
-    
-      const productCollectionRef = 
-        collection(db, "users", user.uid, "bakery",bakeryId,"products")
-    
-      await setDoc(doc(productCollectionRef), {
+      set(ref(db, 'products/' + uuid.v4()), {
         image: downloadURL,
         productName: values.productName,
         description: values.description,
         price: values.price,
         numberOfItems: values.numberOfItems,
         category: values.category,
+        averageRating: 5,
         createdAt: serverTimestamp(),
+        bakeryID: user.uid
       });
+    
+
+      
 
       setLoading(false);
       resetForm();
@@ -116,7 +122,6 @@ const RegisterProduct = ({ route }) => {
         duration: 3000,
         style: { top: "5%", backgroundColor: "#2ecc71" },
       });
-      
     } catch (error) {
       console.error("Error in registerProductHandle:", error);
       setLoading(false);
@@ -132,15 +137,12 @@ const RegisterProduct = ({ route }) => {
   };
 
   const cakeCategories = [
-    "Chocolate Cake",
-    "Cheese Cake",
-    "Vanilla Cake",
-    "Fruit Cake",
-    "Red Velvet Cake",
-    "Carrot Cake",
-    "Pound Cake",
-    "Angel Food Cake",
-    "Biscotti",
+    "chocolate-cake",
+    "cheese-cake",
+    "vanilla-cake",
+    "fruit-Cake",
+    "birthday-Cake",
+    "party",
   ];
 
   return (
@@ -256,11 +258,14 @@ const RegisterProduct = ({ route }) => {
                 onPress={handleSubmit}
                 disabled={loading}
               >
-                {loading? <ActivityIndicator
-                      size="small"
-                      color={Colors.secondaryColor}
-                    />:<Text style={styles.buttonText}>Register Product</Text> }
-                
+                {loading ? (
+                  <ActivityIndicator
+                    size="small"
+                    color={Colors.secondaryColor}
+                  />
+                ) : (
+                  <Text style={styles.buttonText}>Register Product</Text>
+                )}
               </TouchableOpacity>
             </>
           )}
@@ -290,7 +295,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   imagePickerButton: {
-    backgroundColor: "#4CAF50",
+    backgroundColor: Colors.primaryColor,
     padding: 10,
     borderRadius: 10,
     alignItems: "center",

@@ -1,4 +1,4 @@
-import React, { useState, useEffect,useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   View,
   Text,
@@ -8,17 +8,136 @@ import {
   StyleSheet,
   TouchableOpacity,
   RefreshControl,
+  FlatList,
+  ActivityIndicator,
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import Colors from "../assets/Colors";
-import { SliderBox } from "react-native-image-slider-box";
 import { useAuth } from "../AuthContextApi";
 import ImageSlider from "./ImageSlider";
-import  BakeryCard from "./BakeryCard";
+import BakeryCard from "./BakeryCard";
 import CakeList from "./CakeList";
+import {
+  collection,
+  getDocs,
+  getFirestore,
+  // query,
+  // orderBy,
+  // limit,
+} from "firebase/firestore";
+import app from "../firebase/config";
+import { useNavigation } from "@react-navigation/native";
+import {
+  ref,
+  orderBy,
+  limit,
+  query,
+  get,
+  getDatabase,
+  orderByChild,
+  exists,
+  onValue,
+  equalTo,
+  limitToFirst,limitToLast
+} from "firebase/database";
 const Home = () => {
   const { user, updateUserInContext } = useAuth();
+  const db = getFirestore(app);
+  const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [popularCakes, setPopularCakes] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const navigation = useNavigation();
+  const database = getDatabase(app);
+  useEffect(() => {
+    getCategories();
+    getPopularCakes();
+  }, []);
+  const productsRef = ref(database, "products");
+  const getCategories = () => {
+    try {
+      const queryResult = query(productsRef, orderByChild("category"));
+
+      onValue(queryResult, (snapshot) => {
+        const data = snapshot.val();
+        const categoryArray = [];
+
+        if (data) {
+          Object.values(data).forEach((product) => {
+            if (!categoryArray.includes(product.category)) {
+              categoryArray.push(product.category);
+            }
+          });
+        }
+        setCategories(categoryArray);
+        setLoading(false);
+      });
+    } catch (error) {
+      console.error("Error fetching data:", error.message);
+    }
+  };
+
+  const getPopularCakes = () => {
+    const PopularCakesQueryResult = query(
+      productsRef,
+      orderByChild("averageRating"),
+      limitToLast(2)
+    );
+
+    onValue(PopularCakesQueryResult, (snapshot) => {
+      const data = snapshot.val();
+      const popularCakesArray = [];
+
+      if (data) {
+        // Object.values(data).forEach((product) => {
+        //   popularCakesArray.push({
+        //     id: product.id,
+        //     ...product,
+        //   });
+        // });
+        Object.keys(data)
+        .sort((a, b) => data[b].averageRating - data[a].averageRating)
+        .slice(0, 4)
+        .forEach((id) => {
+          popularCakesArray.push({
+            id,
+            ...data[id],
+          });
+        });
+      }
+
+      // console.log(popularCakesArray);
+      setPopularCakes(popularCakesArray);
+      setLoading(false);
+    });
+  };
+
+  const renderCategoryItem = ({ item }) => (
+    <TouchableOpacity style={styles.categoryButton} key={item}>
+      <Icon
+        name={item ? "birthday-cake" : "birthday-cake"}
+        size={20}
+        color="white"
+      />
+      <Text style={styles.categoryButtonText}>{item}</Text>
+    </TouchableOpacity>
+  );
+
+  const renderPopularCakeItem = ({ item }) => (
+    <TouchableOpacity style={styles.cakeCard} key={item.id}>
+      <Image
+        source={{ uri: item.image || "https://via.placeholder.com/150" }}
+        style={styles.cakeImage}
+      />
+      <Text style={styles.cakeName}>{item.productName}</Text>
+      <View style={styles.cakeInfoRow}>
+        <Icon name="fire" size={16} color="#ff66b2" />
+        <Text style={styles.cakeCalories}>{item.category}</Text>
+      </View>
+      <Text style={styles.cakePrice}>{item.price}</Text>
+    </TouchableOpacity>
+  );
+
   const onRefresh = useCallback(() => {
     setRefreshing(true);
 
@@ -26,12 +145,16 @@ const Home = () => {
       setRefreshing(false);
     }, 1500);
   }, []);
-  
+
   return (
     <ScrollView
       style={styles.container}
       refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={Colors.primaryColor}  />
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+          tintColor={Colors.primaryColor}
+        />
       }
     >
       {/* User Profile  */}
@@ -71,99 +194,69 @@ const Home = () => {
       </View>
       {/* end earch bar */}
 
-     
-        <ImageSlider/>
-      {/* Categories */}
-      {/* <View style={styles.categoryContainer}>
-        <View
-          style={{
-            flex: 1,
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <Text style={styles.categoryHeading}>Categories</Text>
-          <TouchableOpacity>
-            <Text style={{ color: Colors.primaryColor }}>View all </Text>
-          </TouchableOpacity>
-        </View>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={{ margin: 10 }}
-        >
-          <TouchableOpacity style={styles.categoryButton}>
-            <Icon name="birthday-cake" size={20} color="white" />
-            <Text style={styles.categoryButtonText}>Birthday</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.categoryButton}>
-            <Icon name="gift" size={20} color="white" />
-            <Text style={styles.categoryButtonText}>Anniversary</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.categoryButton}>
-            <Icon name="heart" size={20} color="white" />
-            <Text style={styles.categoryButtonText}>Wedding</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.categoryButton}>
-            <Icon name="gift" size={20} color="white" />
-            <Text style={styles.categoryButtonText}>Anniversary</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.categoryButton}>
-            <Icon name="birthday-cake" size={20} color="white" />
-            <Text style={styles.categoryButtonText}>Birthday</Text>
-          </TouchableOpacity>
-        </ScrollView>
-      </View> */}
-      <CakeList/>
-      {/* popularCakesContainer */}
-      {/* <View style={styles.popularCakesContainer}>
-        <Text style={styles.popularCakesHeading}>Popular Cakes</Text>
-        <View style={styles.cakeRow}>
-          <TouchableOpacity style={styles.cakeCard}>
-            <Image
-              source={require("../assets/cake1.jpg")}
-              style={styles.cakeImage}
+      <ImageSlider />
+      <View style={styles.container}>
+        {/* Categories */}
+        <View style={styles.categoryContainer}>
+          <View
+            style={{
+              flex: 1,
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <Text style={styles.categoryHeading}>Categories</Text>
+            <TouchableOpacity>
+              <Text style={{ color: Colors.primaryColor }}>View all </Text>
+            </TouchableOpacity>
+          </View>
+          {loading ? (
+            <ActivityIndicator size="large" color={Colors.primaryColor} />
+          ) : (
+            <FlatList
+              data={categories}
+              keyExtractor={(item) => item}
+              renderItem={renderCategoryItem}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={{ margin: 10 }}
             />
-            <Text style={styles.cakeName}>Cake Name</Text>
-            <View style={styles.cakeInfoRow}>
-              <Icon name="fire" size={16} color="#ff66b2" />
-              <Text style={styles.cakeCalories}>200 Calories</Text>
-            </View>
-            <Text style={styles.cakePrice}>$50.00</Text>
-          </TouchableOpacity>
+          )}
+        </View>
 
-          <TouchableOpacity style={styles.cakeCard}>
-            <Image
-              source={require("../assets/cake2.jpg")}
-              style={styles.cakeImage}
+        {/* popularCakesContainer */}
+        <View style={styles.popularCakesContainer}>
+          <View
+            style={{
+              flex: 1,
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <Text style={styles.categoryHeading}>Popular Cakes</Text>
+            <TouchableOpacity onPress={() => navigation.navigate("CakeList")}>
+              <Text style={{ color: Colors.primaryColor }}>View all </Text>
+            </TouchableOpacity>
+          </View>
+          {loading ? (
+            <ActivityIndicator size="large" color={Colors.primaryColor} />
+          ) : (
+            <FlatList
+              data={popularCakes}
+              keyExtractor={(item) => item.id}
+              renderItem={renderPopularCakeItem}
+              numColumns={2}
             />
-            <Text style={styles.cakeName}>Cake Name</Text>
-            <View style={styles.cakeInfoRow}>
-              <Icon name="fire" size={16} color="#ff66b2" />
-              <Text style={styles.cakeCalories}>200 Calories</Text>
-            </View>
-            <Text style={styles.cakePrice}>$50.00</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.cakeCard}>
-            <Image
-              source={require("../assets/splash.png")}
-              style={styles.cakeImage}
-            />
-            <Text style={styles.cakeName}>Cake Name</Text>
-            <View style={styles.cakeInfoRow}>
-              <Icon name="fire" size={16} color="#ff66b2" />
-              <Text style={styles.cakeCalories}>200 Calories</Text>
-            </View>
-            <Text style={styles.cakePrice}>$50.00</Text>
-          </TouchableOpacity>
+          )}
         </View>
-      </View> */}
+      </View>
 
       {/* Bakeries Section */}
       <View style={styles.bakeriesContainer}>
         <Text style={styles.bakeriesHeading}>All Registered Bakeries</Text>
-        <BakeryCard  onRefresh={onRefresh}/>
+        <BakeryCard onRefresh={onRefresh} />
       </View>
     </ScrollView>
   );
@@ -228,7 +321,7 @@ const styles = StyleSheet.create({
     },
     elevation: 5,
     backgroundColor: "white",
-    placeholderTextColor: Colors.primaryColor,
+    // placeholderTextColor: Colors.primaryColor,
   },
   filterIcon: {
     padding: 6,
@@ -302,6 +395,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     marginBottom: 20,
     backgroundColor: "#f9f9f9",
+    marginRight: 20,
   },
   cakeImage: {
     width: "100%",
@@ -314,6 +408,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#000",
     marginTop: 10,
+    fontWeight:"bold",
     paddingHorizontal: 10,
   },
   cakeInfoRow: {
@@ -338,3 +433,45 @@ const styles = StyleSheet.create({
 });
 
 export default Home;
+
+// import { ref, orderBy, limit, query, get, getDatabase } from 'firebase/database';
+
+// const getCategories = async () => {
+//   try {
+//     const productsRef = ref(getDatabase(), 'products');
+
+//     // Get categories
+//     const categories = [];
+//     const categoriesSnapshot = await get(productsRef);
+//     for (const productId in categoriesSnapshot.val()) {
+//       const product = categoriesSnapshot.val()[productId];
+//       for (const itemId in product.items) {
+//         const itemDetails = product.items[itemId].details;
+//         if (itemDetails && itemDetails.category && !categories.includes(itemDetails.category)) {
+//           categories.push(itemDetails.category);
+//         }
+//       }
+//     }
+
+//     // Get popular cakes
+//     const itemsQuery = query(
+//       productsRef,
+//       orderBy('items/details/averageRating', 'desc'),
+//       limit(4)
+//     );
+//     const itemsSnapshot = await get(itemsQuery);
+
+//     const cakes = [];
+//     itemsSnapshot.forEach((itemSnapshot) => {
+//       const itemData = { ...itemSnapshot.val().items, id: itemSnapshot.key };
+//       cakes.push(itemData);
+//     });
+
+//     setPopularCakes(cakes);
+//     setCategories(categories);
+//   } catch (error) {
+//     console.error('Error getting popular cakes:', error);
+//   } finally {
+//     setLoading(false);
+//   }
+// };

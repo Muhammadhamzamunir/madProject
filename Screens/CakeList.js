@@ -76,8 +76,7 @@ const CakeList = () => {
         keyExtractor={(item) => item.id}
         renderItem={renderCakeItem}
         numColumns={2}
-        horizontalGap={16} // Adjust the horizontal gap as needed
-        verticalGap={16}   // Adjust the vertical gap as needed
+        contentContainerStyle={styles.flatListContainer}
       />
     </View>
   );
@@ -89,6 +88,11 @@ const styles = StyleSheet.create({
     padding: 20,
     justifyContent: 'center',
     alignItems: 'center',
+    width: '100%',
+  },
+  flatListContainer: {
+    justifyContent: 'space-between',
+    marginHorizontal: -8, // Adjust the negative margin to create a gap between items horizontally
   },
   cakeCard: {
     width: '48%',
@@ -96,6 +100,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     marginBottom: 20,
     backgroundColor: '#f9f9f9',
+    marginRight:20,
   },
   cakeImage: {
     width: '100%',
@@ -103,6 +108,7 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
     borderRadius: 10,
     backgroundColor: '#f9f9f9',
+    overflow: 'hidden',
   },
   cakeName: {
     fontSize: 16,

@@ -15,76 +15,78 @@ import {
   doc,
   getDocs,
   query,
+  getDoc
 } from "firebase/firestore";
 import { useAuth } from "../AuthContextApi";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Colors from "../assets/Colors";
 import app from "../firebase/config";
-
+import { getDatabase, ref, onValue,get,child,exists } from "firebase/database";
 const MyStore = () => {
-  const { user } = useAuth();
+  
   const navigation = useNavigation();
   const [bakeryDetails, setBakeryDetails] = useState({});
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const db = getFirestore(app);
-
+  const database = getDatabase(app);
+  const { user, updateUserInContext } = useAuth();
   useEffect(() => {
     fetchBakeryDetails();
-    // fetchProducts();
+    fetchProducts();
   }, [user.uid, bakeryDetails.id, db]);
 
+ 
   const fetchBakeryDetails = async () => {
     try {
-      const bakeryQuery = query(collection(db, "users", user.uid, "bakery"));
-
-      const bakerySnapshot = await getDocs(bakeryQuery);
-
-      if (!bakerySnapshot.empty) {
-        const bakeryData = bakerySnapshot.docs[0].data();
-        setBakeryDetails({ id: bakerySnapshot.docs[0].id, ...bakeryData });
-        fetchProducts()
-      } else {
-        console.error("No bakery details found.");
-      }
+      const bakeryId = user.uid;
+      const bakeryRef = doc(db, 'bakeries', bakeryId);
+      
+      const bakerySnapshot = await getDoc(bakeryRef);
+      
+      if (bakerySnapshot.exists()) {
+        const bakeryData = bakerySnapshot.data();
+        setBakeryDetails({ id: bakerySnapshot.id, ...bakeryData });
+      } 
     } catch (error) {
-      console.error("Error fetching bakery details:", error);
+      console.error('Error fetching bakery details:', error);
     }
   };
-
   const fetchProducts = async () => {
     try {
-      if (!bakeryDetails) {
-        console.error("Bakery details are not available.");
-        return;
-      }
-
-      const productQuery = query(
-        collection(db, "users", user.uid, "bakery", bakeryDetails.id, "products")
-      );
-      if(productQuery){
-        const productSnapshot = await getDocs(productQuery);
-        const productList = [];
+      const bakeryID = user.uid;
+      const productsRef = ref(database, 'products');
   
-        productSnapshot && productSnapshot.forEach((doc) => {
-          const productData = doc.data();
-          productList.push({
-            id: doc.id,
-            ...productData,
+      onValue(productsRef, (snapshot) => {
+        const data = snapshot.val();
+        const newArray = [];
+  
+        // Check if data exists and is an object
+        if (data && typeof data === 'object') {
+          // Iterate through the children of the 'products' node
+          Object.entries(data).forEach(([productId, productData]) => {
+            // Check if the product belongs to the specified bakery
+            if (productData.bakeryID === bakeryID) {
+              newArray.push({
+                id: productId,
+                ...productData,
+              });
+            }
           });
-        });
   
-        setProducts(productList);
-      }
-  
+          console.log('data', newArray);
+          setProducts(newArray);
+        }
+      });
     } catch (error) {
-      console.error("Error fetching products:", error);
+      console.error('Error fetching products:', error);
     } finally {
       setLoading(false);
       setIsRefreshing(false);
     }
   };
+  
 
   const onRefresh = useCallback(() => {
     setIsRefreshing(true);
@@ -124,12 +126,14 @@ const MyStore = () => {
             </TouchableOpacity>
           </View>
       {/* Register Product Button */}
+      
       <TouchableOpacity
         style={styles.registerProductButton}
         onPress={navigateToRegisterProduct}
       >
         <Text style={styles.buttonText}>Register Product</Text>
       </TouchableOpacity>
+      <View style={{height:1,backgroundColor:"grey",margin:5}}></View>
       <Text style={styles.productListHeading}>Product List</Text>
       {/* Product List */}
       {loading ? (
@@ -213,6 +217,7 @@ const styles = StyleSheet.create({
     fontSize: 25,
     fontWeight: "bold",
     marginBottom: 15,
+    marginTop:10
   },
   productItemContainer: {
     flexDirection: "row",
