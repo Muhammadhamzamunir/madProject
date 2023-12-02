@@ -157,7 +157,7 @@ function MainContainer() {
         <Stack.Screen
           name="CakeDetailPage"
           component={CakeDetailPage}
-          options={{ headerShown: true }}
+          options={({ route }) => ({ title: route.params.item.productName })}
         />
          <Stack.Screen
           name="CakeList"

@@ -9,6 +9,7 @@ import {
   getDatabase,
 } from "firebase/database";
 import app from "../firebase/config";
+import CakeCard from "./CakeCard";
 
 const CakesByCategory = ({ route }) => {
   const { category } = route.params;
@@ -41,23 +42,12 @@ const CakesByCategory = ({ route }) => {
     fetchCakesByCategory();
   }, [category]);
 
-  const renderCakeItem = ({ item }) => (
-    <TouchableOpacity style={styles.cakeCard}>
-      <Image source={{ uri: item.image || "https://via.placeholder.com/150" }} style={styles.cakeImage} />
-      <Text style={styles.cakeName}>{item.productName}</Text>
-      <Text style={styles.cakePrice}>{item.price}</Text>
-    </TouchableOpacity>
-  );
+
 
   return (
     <View style={styles.container}>
       <Text style={styles.categoryHeading}>{category}</Text>
-      <FlatList
-        data={cakes}
-        keyExtractor={(item) => item.id}
-        renderItem={renderCakeItem}
-        numColumns={2}
-      />
+      <CakeCard data={cakes}/>
     </View>
   );
 };
@@ -74,36 +64,7 @@ const styles = StyleSheet.create({
     color: "#000",
     marginBottom: 10,
   },
-  cakeCard: {
-    width: "48%",
-    borderRadius: 10,
-    overflow: "hidden",
-    marginBottom: 20,
-    backgroundColor: "#f9f9f9",
-    marginRight: 20,
-  },
-  cakeImage: {
-    width: "100%",
-    height: 150,
-    resizeMode: "cover",
-    borderRadius: 10,
-    backgroundColor: "#f9f9f9",
-  },
-  cakeName: {
-    fontSize: 16,
-    color: "#000",
-    marginTop: 10,
-    paddingHorizontal: 10,
-    fontWeight: "bold",
-  },
-  cakePrice: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#000",
-    marginTop: 5,
-    paddingHorizontal: 10,
-    marginBottom: 10,
-  },
+  
 });
 
 export default CakesByCategory;

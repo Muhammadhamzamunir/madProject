@@ -1,47 +1,46 @@
-import React from 'react';
+// CakeDetailPage.js
+import React, { useState } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import Colors from '../assets/Colors';
 
-const CakeDetailPage = ({route}) => {
+const CakeDetailPage = ({ route }) => {
+  console.log(route.params.item.productName);
+  const { item } = route.params;
+  const [quantity, setQuantity] = useState(1);
+
+  const handleAddToCart = () => {
+    // Add logic to add the cake to the cart
+    // You can use a state management solution or dispatch an action here
+    console.log('Cake added to cart:', item);
+  };
+
   return (
     <View style={styles.container}>
-      {/* Top Left Corner */}
-      <View style={styles.topLeftContainer}>
-        <Text style={styles.currentTime}>10:30 AM</Text>
-        <Text style={styles.videoTitle}>Chocolate Truffle Cake</Text>
+      <Image source={{ uri: item.image || 'https://via.placeholder.com/300' }} style={styles.cakeImage} />
+      <View style={styles.detailsContainer}>
+        <Text style={styles.cakeName}>{item.productName}</Text>
+        <View style={styles.cakeInfoRow}>
+          <Icon name="fire" size={16} color="#ff66b2" />
+          <Text style={styles.cakeCalories}>{item.category}</Text>
+        </View>
+        <Text style={styles.cakeDescription}>{item.description}</Text>
+        <Text style={styles.cakePrice}>${item.price}</Text>
       </View>
-
-      {/* Cake Image */}
-      <Image
-        source={require('../assets/cake2.jpg')}
-        style={styles.cakeImage}
-      />
-
-      {/* Cake Details */}
-      <View style={styles.cakeDetailsContainer}>
-        <Text style={styles.cakePrice}>$25.00</Text>
-        <Text style={styles.calories}>Calories: 300</Text>
-        <Text style={styles.cakeType}>Cake Type: Eggless</Text>
-        <Text style={styles.cakeSize}>Cake Size: 6" (Serves 6-8)</Text>
-        <Text style={styles.glutenFreeOption}>Gluten-Free Option: +$10.00</Text>
-
-        {/* Cake Description */}
-        <Text style={styles.cakeDescription}>
-          A decadent chocolate truffle cake made with the finest cocoa and rich
-          chocolate ganache. Indulge in the velvety texture and intense flavor
-          of this exquisite dessert. Perfect for any celebration or to satisfy
-          your chocolate cravings!
-        </Text>
-
-        {/* Add to Cart Button */}
-        <TouchableOpacity style={styles.addToCartButton}>
-          <Text style={styles.addToCartButtonText}>Add to Cart</Text>
+      <View style={styles.interactiveContainer}>
+        <View style={styles.quantityContainer}>
+          <TouchableOpacity onPress={() => setQuantity(quantity - 1)}>
+            <Icon name="minus" size={20} color={Colors.primaryColor} />
+          </TouchableOpacity>
+          <Text style={styles.quantityText}>{quantity}</Text>
+          <TouchableOpacity onPress={() => setQuantity(quantity + 1)}>
+            <Icon name="plus" size={20} color={Colors.primaryColor} />
+          </TouchableOpacity>
+        </View>
+        <TouchableOpacity style={styles.addToCartButton} onPress={handleAddToCart}>
+          <Text style={styles.addToCartText}>Add to Cart</Text>
         </TouchableOpacity>
       </View>
-
-      {/* Shopping Cart Icon */}
-      <TouchableOpacity style={styles.shoppingCartIcon}>
-        {/* Insert shopping cart icon image here */}
-      </TouchableOpacity>
     </View>
   );
 };
@@ -50,77 +49,64 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    paddingHorizontal: 20,
-    paddingTop: 20,
-  },
-  topLeftContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 10,
-  },
-  currentTime: {
-    fontSize: 16,
-    color: '#777',
-  },
-  videoTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#000',
   },
   cakeImage: {
     width: '100%',
     height: 200,
-    borderRadius: 10,
-    marginBottom: 10,
+    resizeMode: 'cover',
   },
-  cakeDetailsContainer: {
-    marginBottom: 20,
+  detailsContainer: {
+    padding: 20,
   },
-  cakePrice: {
+  cakeName: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#000',
+    marginBottom: 10,
   },
-  calories: {
+  cakeInfoRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  cakeCalories: {
     fontSize: 16,
     color: '#777',
-    marginTop: 5,
-  },
-  cakeType: {
-    fontSize: 16,
-    color: '#000',
-    marginTop: 5,
-  },
-  cakeSize: {
-    fontSize: 16,
-    color: '#000',
-    marginTop: 5,
-  },
-  glutenFreeOption: {
-    fontSize: 16,
-    color: '#000',
-    marginTop: 5,
+    marginLeft: 5,
   },
   cakeDescription: {
     fontSize: 16,
-    color: '#777',
-    marginTop: 10,
+    marginBottom: 10,
+  },
+  cakePrice: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: Colors.primaryColor,
+  },
+  interactiveContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 20,
+    borderTopWidth: 1,
+    borderTopColor: '#ccc',
+  },
+  quantityContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  quantityText: {
+    fontSize: 18,
+    marginHorizontal: 10,
   },
   addToCartButton: {
-    backgroundColor: '#E44D26',
+    backgroundColor: Colors.primaryColor,
     paddingVertical: 10,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginTop: 20,
+    paddingHorizontal: 20,
+    borderRadius: 5,
   },
-  addToCartButtonText: {
-    fontSize: 18,
+  addToCartText: {
     color: '#fff',
-  },
-  shoppingCartIcon: {
-    position: 'absolute',
-    top: 20,
-    right: 20,
+    fontSize: 18,
+    fontWeight: 'bold',
   },
 });
 
