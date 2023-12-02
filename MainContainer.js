@@ -29,6 +29,8 @@ import MyStore from "./Screens/MyStore";
 import RegisterProduct from "./Screens/RegisterProduct";
 import CakeDetailPage from "./Screens/CakeDetailPage";
 import CakeList from "./Screens/CakeList";
+import AllCategory from "./Screens/AllCategory";
+import CakesByCategory from "./Screens/CakesByCategory";
 const homeName = "Home";
 const loginName = "Login";
 const signupName = "Signup";
@@ -110,7 +112,8 @@ function MainContainer() {
         <Stack.Screen
           name="Main"
           component={MainTabNavigator}
-          options={{ headerShown: false }}
+          options={{ title: 'Home', headerShown: false }}
+          
         />
         <Stack.Screen
           name={signupName}
@@ -159,7 +162,17 @@ function MainContainer() {
          <Stack.Screen
           name="CakeList"
           component={CakeList}
-          options={{ headerShown: true }}
+          options={({ route }) => ({ title: "Cakes" })}
+        />
+        <Stack.Screen
+          name="AllCategory"
+          component={AllCategory}
+          options={({ route }) => ({ title: "Categories" })}
+        />
+        <Stack.Screen
+          name="CakesByCategory"
+          component={CakesByCategory}
+          options={({ route }) => ({ title: route.params.category })}
         />
       </Stack.Navigator>
     </NavigationContainer>

@@ -2,39 +2,35 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, FlatList, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { collection, getDocs, getFirestore } from 'firebase/firestore';
+import { ref, onValue,getDatabase } from "firebase/database";
 import app from '../firebase/config';
+import CakeCard from './CakeCard';
 
 const CakeList = () => {
   const [cakes, setCakes] = useState([]);
   const [loading, setLoading] = useState(true);
-  const db = getFirestore(app);
   const navigation = useNavigation();
 
   useEffect(() => {
     const getAllProducts = async () => {
       try {
-        const usersCollectionRef = collection(db, 'users');
-        const usersSnapshot = await getDocs(usersCollectionRef);
+        const db = getDatabase(app);
+        const productsRef = ref(db, "products");
+        onValue(productsRef, (snapshot) => {
+          const data = snapshot.val();
+          const cakesArray = [];
 
-        const allCakes = [];
-
-        for (const userDoc of usersSnapshot.docs) {
-          const bakeryCollectionRef = collection(userDoc.ref, 'bakery');
-          const bakerySnapshot = await getDocs(bakeryCollectionRef);
-
-          for (const bakeryDoc of bakerySnapshot.docs) {
-            const productsCollectionRef = collection(bakeryDoc.ref, 'products');
-            const productsSnapshot = await getDocs(productsCollectionRef);
-
-            productsSnapshot.forEach((productDoc) => {
-              const productData = { ...productDoc.data(), id: productDoc.id };
-              allCakes.push(productData);
+          if (data) {
+            Object.keys(data).forEach((id) => {
+              cakesArray.push({
+                id,
+                ...data[id],
+              });
             });
           }
-        }
 
-        setCakes(allCakes);
+          setCakes(cakesArray);
+        });
       } catch (error) {
         console.error('Error getting all products:', error);
       } finally {
@@ -46,20 +42,10 @@ const CakeList = () => {
   }, []);
 
   const handleCakePress = (cakeId) => {
-    // Navigate to the cake detail page with the cake ID
     navigation.navigate('CakeDetailPage', { cakeId });
   };
 
-  const renderCakeItem = ({ item }) => (
-    <TouchableOpacity style={styles.cakeCard} onPress={() => handleCakePress(item.id)}>
-      <Image source={{ uri: item.image || 'https://via.placeholder.com/150' }} style={styles.cakeImage} />
-      <Text style={styles.cakeName}>{item.productName}</Text>
-      <View style={styles.cakeInfoRow}>
-        <Text style={styles.cakeCalories}>{item.description}</Text>
-      </View>
-      <Text style={styles.cakePrice}>${item.price}</Text>
-    </TouchableOpacity>
-  );
+ 
 
   if (loading) {
     return (
@@ -71,13 +57,9 @@ const CakeList = () => {
 
   return (
     <View style={styles.container}>
-      <FlatList
-        data={cakes}
-        keyExtractor={(item) => item.id}
-        renderItem={renderCakeItem}
-        numColumns={2}
-        contentContainerStyle={styles.flatListContainer}
-      />
+      <Text style={{ fontSize: 30, fontWeight: "bold", textAlign: "center", padding: 20 }}>All Cakes</Text>
+     
+      <CakeCard data={cakes}/>
     </View>
   );
 };
@@ -90,9 +72,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
   },
-  flatListContainer: {
-    justifyContent: 'space-between',
-    marginHorizontal: -8, // Adjust the negative margin to create a gap between items horizontally
+  flatList: {
+    flexGrow: 0, // Set flexGrow to 0 to remove vertical scrolling
   },
   cakeCard: {
     width: '48%',
@@ -100,7 +81,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     marginBottom: 20,
     backgroundColor: '#f9f9f9',
-    marginRight:20,
+    marginRight: 20,
   },
   cakeImage: {
     width: '100%',

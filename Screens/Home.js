@@ -40,6 +40,7 @@ import {
   equalTo,
   limitToFirst,limitToLast
 } from "firebase/database";
+import CakeCard from "./CakeCard";
 const Home = () => {
   const { user, updateUserInContext } = useAuth();
   const db = getFirestore(app);
@@ -56,7 +57,7 @@ const Home = () => {
   const productsRef = ref(database, "products");
   const getCategories = () => {
     try {
-      const queryResult = query(productsRef, orderByChild("category"));
+      const queryResult = query(productsRef, orderByChild("category"), limitToFirst(4));
 
       onValue(queryResult, (snapshot) => {
         const data = snapshot.val();
@@ -81,7 +82,7 @@ const Home = () => {
     const PopularCakesQueryResult = query(
       productsRef,
       orderByChild("averageRating"),
-      limitToLast(2)
+      limitToLast(4)
     );
 
     onValue(PopularCakesQueryResult, (snapshot) => {
@@ -89,12 +90,7 @@ const Home = () => {
       const popularCakesArray = [];
 
       if (data) {
-        // Object.values(data).forEach((product) => {
-        //   popularCakesArray.push({
-        //     id: product.id,
-        //     ...product,
-        //   });
-        // });
+       
         Object.keys(data)
         .sort((a, b) => data[b].averageRating - data[a].averageRating)
         .slice(0, 4)
@@ -106,14 +102,18 @@ const Home = () => {
         });
       }
 
-      // console.log(popularCakesArray);
+      
       setPopularCakes(popularCakesArray);
       setLoading(false);
     });
   };
+  const onCategoryPress = (category) => {
+    console.log("Category Pressed:", category);
+    navigation.navigate('CakesByCategory',{category})
+  };
 
   const renderCategoryItem = ({ item }) => (
-    <TouchableOpacity style={styles.categoryButton} key={item}>
+    <TouchableOpacity style={styles.categoryButton} key={item}  onPress={() => onCategoryPress(item)}>
       <Icon
         name={item ? "birthday-cake" : "birthday-cake"}
         size={20}
@@ -123,20 +123,7 @@ const Home = () => {
     </TouchableOpacity>
   );
 
-  const renderPopularCakeItem = ({ item }) => (
-    <TouchableOpacity style={styles.cakeCard} key={item.id}>
-      <Image
-        source={{ uri: item.image || "https://via.placeholder.com/150" }}
-        style={styles.cakeImage}
-      />
-      <Text style={styles.cakeName}>{item.productName}</Text>
-      <View style={styles.cakeInfoRow}>
-        <Icon name="fire" size={16} color="#ff66b2" />
-        <Text style={styles.cakeCalories}>{item.category}</Text>
-      </View>
-      <Text style={styles.cakePrice}>{item.price}</Text>
-    </TouchableOpacity>
-  );
+ 
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -174,7 +161,7 @@ const Home = () => {
           </View>
         </View>
       </View>
-      {/* end user profile */}
+      
 
       {/* searchBar  */}
       <View
@@ -192,11 +179,12 @@ const Home = () => {
           <Icon name="bars" size={20} color={Colors.primaryColor} />
         </TouchableOpacity>
       </View>
-      {/* end earch bar */}
-
+      
+      {/* Image Slider */}
       <ImageSlider />
-      <View style={styles.container}>
+
         {/* Categories */}
+      <View style={styles.container}>
         <View style={styles.categoryContainer}>
           <View
             style={{
@@ -207,7 +195,7 @@ const Home = () => {
             }}
           >
             <Text style={styles.categoryHeading}>Categories</Text>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={()=> navigation.navigate('AllCategory')}>
               <Text style={{ color: Colors.primaryColor }}>View all </Text>
             </TouchableOpacity>
           </View>
@@ -243,12 +231,7 @@ const Home = () => {
           {loading ? (
             <ActivityIndicator size="large" color={Colors.primaryColor} />
           ) : (
-            <FlatList
-              data={popularCakes}
-              keyExtractor={(item) => item.id}
-              renderItem={renderPopularCakeItem}
-              numColumns={2}
-            />
+           <CakeCard data={popularCakes}/>
           )}
         </View>
       </View>
@@ -384,94 +367,7 @@ const styles = StyleSheet.create({
     color: "#000",
     marginBottom: 10,
   },
-  cakeRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    flexWrap: "wrap",
-  },
-  cakeCard: {
-    width: "48%",
-    borderRadius: 10,
-    overflow: "hidden",
-    marginBottom: 20,
-    backgroundColor: "#f9f9f9",
-    marginRight: 20,
-  },
-  cakeImage: {
-    width: "100%",
-    height: 150,
-    resizeMode: "cover",
-    borderRadius: 10,
-    backgroundColor: "#f9f9f9",
-  },
-  cakeName: {
-    fontSize: 16,
-    color: "#000",
-    marginTop: 10,
-    fontWeight:"bold",
-    paddingHorizontal: 10,
-  },
-  cakeInfoRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginTop: 5,
-    paddingHorizontal: 10,
-  },
-  cakeCalories: {
-    fontSize: 14,
-    color: "#777",
-    marginLeft: 5,
-  },
-  cakePrice: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#000",
-    marginTop: 5,
-    paddingHorizontal: 10,
-    marginBottom: 10,
-  },
+  
 });
 
 export default Home;
-
-// import { ref, orderBy, limit, query, get, getDatabase } from 'firebase/database';
-
-// const getCategories = async () => {
-//   try {
-//     const productsRef = ref(getDatabase(), 'products');
-
-//     // Get categories
-//     const categories = [];
-//     const categoriesSnapshot = await get(productsRef);
-//     for (const productId in categoriesSnapshot.val()) {
-//       const product = categoriesSnapshot.val()[productId];
-//       for (const itemId in product.items) {
-//         const itemDetails = product.items[itemId].details;
-//         if (itemDetails && itemDetails.category && !categories.includes(itemDetails.category)) {
-//           categories.push(itemDetails.category);
-//         }
-//       }
-//     }
-
-//     // Get popular cakes
-//     const itemsQuery = query(
-//       productsRef,
-//       orderBy('items/details/averageRating', 'desc'),
-//       limit(4)
-//     );
-//     const itemsSnapshot = await get(itemsQuery);
-
-//     const cakes = [];
-//     itemsSnapshot.forEach((itemSnapshot) => {
-//       const itemData = { ...itemSnapshot.val().items, id: itemSnapshot.key };
-//       cakes.push(itemData);
-//     });
-
-//     setPopularCakes(cakes);
-//     setCategories(categories);
-//   } catch (error) {
-//     console.error('Error getting popular cakes:', error);
-//   } finally {
-//     setLoading(false);
-//   }
-// };
