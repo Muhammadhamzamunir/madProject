@@ -62,7 +62,9 @@ const BakeryCard = () => {
         <TouchableOpacity
           key={bakery.bakeryId}
           style={styles.cardContainer}
-          onPress={() => navigation.navigate('BakeryDetail', { bakery })}
+          onPress={() => {
+            console.log(bakery);
+            navigation.navigate('BakeryDetail', { bakery })}}
         >
           <Image source={{ uri: bakery.image }} style={styles.bakeryImage} />
           <View style={styles.textContainer}>

@@ -149,6 +149,7 @@ const RegisterBakery = () => {
         location: values.location,
         country: values.country,
         zipCode: values.zipCode,
+        bakeryId:user.uid
       });
   
       AsyncStorage.getItem('user').then((userData) => {
